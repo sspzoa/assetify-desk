@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -24,12 +25,16 @@ const inquiryTypeDescriptions: Record<string, string> = {
 };
 
 export default function AskForm() {
+  const router = useRouter();
   const [fileInputKey, setFileInputKey] = useState(0);
   const { formState, updateField } = useAskFormState();
   const { result } = useAskFormResult();
   const optionsQuery = useAskFormOptions();
   const submitMutation = useSubmitAskForm({
-    onSuccess: () => setFileInputKey((prev) => prev + 1),
+    onSuccess: (data) => {
+      setFileInputKey((prev) => prev + 1);
+      router.push(`/ticket/ask/${data.id}`);
+    },
   });
 
   const options = optionsQuery.data ?? initialAskFormOptions;

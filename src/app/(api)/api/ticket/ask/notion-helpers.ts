@@ -1,3 +1,5 @@
+import type { AskTicketDetail } from "@/types/askTicket";
+
 export const ASK_TICKETS_DATABASE_ID = process.env.ASK_TICKETS_DATABASE_ID;
 
 export const notionHeaders = {
@@ -36,6 +38,9 @@ const propertyNameMap = {
   assetNumber: "자산번호",
   title: "문의내용",
   notes: "Notes",
+  status: "상태",
+  assignee: "담당자",
+  attachments: "첨부파일",
 };
 
 const extractOptions = (property?: NotionSelectProperty) => {
@@ -138,3 +143,91 @@ export const sanitizeText = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
 
 export const ASK_FIELD_NAMES = propertyNameMap;
+
+type NotionTextSpan = {
+  plain_text?: string;
+};
+
+type NotionPropertyValue = {
+  type: string;
+  title?: NotionTextSpan[];
+  rich_text?: NotionTextSpan[];
+  select?: { name?: string | null } | null;
+  status?: { name?: string | null } | null;
+  people?: Array<{ name?: string | null }> | null;
+  files?: Array<{ name?: string | null }> | null;
+};
+
+const getPlainText = (property?: NotionPropertyValue) => {
+  if (!property) return undefined;
+  if (property.type === "title" && property.title) {
+    return property.title
+      .map((item) => item.plain_text ?? "")
+      .join("")
+      .trim();
+  }
+  if (property.rich_text) {
+    return property.rich_text
+      .map((item) => item.plain_text ?? "")
+      .join("")
+      .trim();
+  }
+  return undefined;
+};
+
+const getSelectName = (property?: NotionPropertyValue) =>
+  property?.select?.name ?? property?.status?.name ?? undefined;
+
+const getPeopleNames = (property?: NotionPropertyValue) =>
+  property?.people?.map((person) => person.name).filter(Boolean) as
+    | string[]
+    | undefined;
+
+const getFileNames = (property?: NotionPropertyValue) =>
+  property?.files?.map((file) => file.name).filter(Boolean) as
+    | string[]
+    | undefined;
+
+export async function fetchAskTicketDetail(
+  ticketId: string,
+): Promise<AskTicketDetail> {
+  const response = await fetch(`${NOTION_BASE_URL}/pages/${ticketId}`, {
+    method: "GET",
+    cache: "no-store",
+    headers: notionHeaders,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const message =
+      typeof data?.message === "string"
+        ? data.message
+        : "문의 정보를 불러오지 못했습니다.";
+    throw new Error(message);
+  }
+
+  const properties = data.properties as
+    | Record<string, NotionPropertyValue>
+    | undefined;
+
+  const getProp = (field: keyof typeof ASK_FIELD_NAMES) =>
+    properties?.[ASK_FIELD_NAMES[field]];
+
+  return {
+    id: data.id,
+    url: data.url ?? null,
+    createdTime: data.created_time,
+    lastEditedTime: data.last_edited_time,
+    detail: getPlainText(getProp("title")),
+    corporation: getSelectName(getProp("corporation")),
+    inquiryType: getSelectName(getProp("inquiryType")),
+    urgency: getSelectName(getProp("urgency")),
+    assetNumber: getPlainText(getProp("assetNumber")),
+    department: getPlainText(getProp("department")),
+    requester: getPlainText(getProp("requester")),
+    status: getSelectName(getProp("status")),
+    assignee: getPeopleNames(getProp("assignee"))?.join(", "),
+    attachments: getFileNames(getProp("attachments")),
+  };
+}

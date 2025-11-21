@@ -76,7 +76,7 @@ export function useAskFormResult() {
 }
 
 type SubmitHookParams = {
-  onSuccess?: () => void;
+  onSuccess?: (data: { id: string }) => void;
 };
 
 export function useSubmitAskForm(params?: SubmitHookParams) {
@@ -92,7 +92,7 @@ export function useSubmitAskForm(params?: SubmitHookParams) {
     onSuccess: (data) => {
       setResult({ id: data.id });
       setFormState(initialAskFormState);
-      onSuccess?.();
+      onSuccess?.(data);
     },
     onError: (error: unknown) => {
       const message =
