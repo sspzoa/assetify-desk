@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { AssetNumberSuggestInput } from "@/components/asset-number/AssetNumberSuggestInput";
 import {
   FileUploadInput,
   FormField,
@@ -142,12 +143,13 @@ export default function AskFormView({
           title="자산 번호"
           description="사용중인 기기에 붙어있는 자산 번호를 적어주세요."
         >
-          <TextInput
-            id="assetNumber"
-            name="assetNumber"
-            placeholder="ex. 2309-N0001"
+          <AssetNumberSuggestInput
+            requesterName={formState.requester}
             value={formState.assetNumber}
-            onChange={(event) => updateField("assetNumber", event.target.value)}
+            onChange={(nextValue) => updateField("assetNumber", nextValue)}
+            inputId="assetNumber"
+            inputName="assetNumber"
+            placeholder="ex. 2309-N0001"
           />
         </FormField>
 
