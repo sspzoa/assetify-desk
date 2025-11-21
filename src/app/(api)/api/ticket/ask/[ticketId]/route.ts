@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { fetchAskTicketDetail } from "@/utils/notion/ask";
 
 type RouteContext = {
-  params: { ticketId: string };
+  params: Promise<{ ticketId: string }>;
 };
 
-export async function GET(_: Request, context: RouteContext) {
-  const ticketId = context.params.ticketId;
+export async function GET(_: NextRequest, context: RouteContext) {
+  const { ticketId } = await context.params;
 
   if (!ticketId) {
     return NextResponse.json(
