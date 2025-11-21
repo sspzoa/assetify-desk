@@ -39,7 +39,7 @@ export function FormField({
           {required ? <span className="text-core-accent">*</span> : null}
         </span>
         {description ? (
-          <span className="text-content-standard-secondary text-label">
+          <span className="whitespace-pre-line text-content-standard-secondary text-label">
             {description}
           </span>
         ) : null}

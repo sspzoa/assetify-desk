@@ -104,11 +104,7 @@ export default function RepairFormView({
         onSubmit={handleSubmit}
         className="flex w-full flex-col items-center gap-spacing-500"
       >
-        <FormField
-          title="법인"
-          description="현재 소속된 법인을 선택해주세요."
-          required
-        >
+        <FormField title="법인" required>
           <SelectInput
             id="repair-corporation"
             name="repair-corporation"
@@ -120,10 +116,7 @@ export default function RepairFormView({
           />
         </FormField>
 
-        <FormField
-          title="부서"
-          description="현재 소속되어계신 부서를 입력해주세요."
-        >
+        <FormField title="부서">
           <TextInput
             id="repair-department"
             name="repair-department"
@@ -133,11 +126,7 @@ export default function RepairFormView({
           />
         </FormField>
 
-        <FormField
-          title="문의자 성함"
-          description="응대를 도와드릴 담당자 성함을 입력해주세요."
-          required
-        >
+        <FormField title="문의자 성함" required>
           <TextInput
             id="repair-requester"
             name="repair-requester"
@@ -150,12 +139,15 @@ export default function RepairFormView({
 
         <FormField
           title="실제 근무 위치"
-          description="엔지니어 방문이 필요한 경우 위치를 알려주세요."
+          description="ex. 용인연구소 → 경기 용인시 처인구 포곡읍 두계로 72
+      향남공장 → 경기 화성시 향남읍 제약공단4길 35-14
+      본사/신관/S빌딩은 신관 3층 자산관리파트에서 직접 수리요청 받고있습니다.
+      본사/신관/S빌딩 근무하시는 분들은 “본사”로 기입해주시기바랍니다."
         >
           <TextInput
             id="repair-location"
             name="repair-location"
-            placeholder="서울시 강남구 ..."
+            placeholder="ex. 경기 용인시 처인구 포곡읍 두계로 72"
             value={formState.location}
             onChange={(event) => updateField("location", event.target.value)}
           />
@@ -163,7 +155,7 @@ export default function RepairFormView({
 
         <FormField
           title="자산번호"
-          description="수리가 필요한 자산번호를 적어주세요."
+          description="사용중인 기기에 붙어있는 자산번호를 적어주세요."
         >
           <TextInput
             id="repair-asset-number"
@@ -190,13 +182,13 @@ export default function RepairFormView({
 
         <FormField
           title="고장 증상"
-          description="필요한 도움이나 요청 사항을 구체적으로 입력해주세요."
+          description="현재 고장 증상을 구체적으로 입력해주세요."
           required
         >
           <RichTextInput
             id="repair-detail"
             name="repair-detail"
-            placeholder="고장 증상, 최근 조치 내용 등을 자세히 적어주세요."
+            placeholder="고장 원인과 현재 증상을 상세히 적어주셔야 원활한 수리가 가능합니다."
             value={formState.detail}
             onChange={(event) => updateField("detail", event.target.value)}
             required
@@ -240,7 +232,9 @@ export default function RepairFormView({
 
         <FormField
           title="수리 진행 동의"
-          description="수리 진행을 위해서는 동의가 필요합니다."
+          description="수리 진행시 수리 비용이 청구되며
+사용자 과실이 판단되지 않을경우 법인에서 100%를 지불하며,
+사용자 과실이 명확 할 경우 사용자에게 수리비의 50%가 청구됩니다.(법인 50% 부담)"
           required
         >
           <label className="flex items-center gap-spacing-200 text-body text-content-standard-primary">

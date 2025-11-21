@@ -105,11 +105,7 @@ export default function AskFormView({
         onSubmit={handleSubmit}
         className="flex w-full flex-col items-center gap-spacing-500"
       >
-        <FormField
-          title="법인"
-          description="현재 소속되어계신 법인을 입력해주세요."
-          required
-        >
+        <FormField title="법인" required>
           <SelectInput
             id="corporation"
             name="corporation"
@@ -121,10 +117,7 @@ export default function AskFormView({
           />
         </FormField>
 
-        <FormField
-          title="부서"
-          description="현재 소속되어계신 부서를 입력해주세요."
-        >
+        <FormField title="부서">
           <TextInput
             id="department"
             name="department"
@@ -134,11 +127,7 @@ export default function AskFormView({
           />
         </FormField>
 
-        <FormField
-          title="문의자 성함"
-          description="응대를 도와드릴 담당자 성함을 입력해주세요."
-          required
-        >
+        <FormField title="문의자 성함" required>
           <TextInput
             id="requester"
             name="requester"
