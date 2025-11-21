@@ -43,10 +43,11 @@ const submitAskTicket = async (payload: AskFormState) => {
   return data as { id: string };
 };
 
-export function useAskFormOptions() {
+export function useAskFormOptions(initialData?: AskFormOptions) {
   return useQuery<AskFormOptions, Error>({
     queryKey: OPTIONS_QUERY_KEY,
     queryFn: fetchAskFormOptions,
+    initialData,
   });
 }
 
