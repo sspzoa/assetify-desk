@@ -110,29 +110,46 @@ type RadioSelectProps = {
   name: string;
   options: RadioOption[];
   defaultValue?: string;
+  value?: string;
   required?: boolean;
+  disabled?: boolean;
+  onChange?: (value: string) => void;
 };
 
 export function RadioSelect({
   name,
   options,
   defaultValue,
+  value,
   required,
+  disabled,
+  onChange,
 }: RadioSelectProps) {
+  const isControlled = typeof value !== "undefined";
+
   return (
     <div className="flex flex-col gap-spacing-200">
       {options.map((option, index) => (
         <label
           key={option.value}
-          className="flex cursor-pointer items-start gap-spacing-200 rounded-radius-500 border border-line-outline bg-components-fill-standard-secondary p-spacing-400 transition hover:border-core-accent"
+          className={cn(
+            "flex items-start gap-spacing-200 rounded-radius-500 border border-line-outline bg-components-fill-standard-secondary p-spacing-400 transition",
+            disabled
+              ? "cursor-not-allowed opacity-60"
+              : "cursor-pointer hover:border-core-accent",
+          )}
         >
           <input
             type="radio"
             name={name}
             value={option.value}
-            defaultChecked={defaultValue === option.value}
-            required={required && index === 0}
-            className="mt-spacing-50 h-spacing-400 w-spacing-400 cursor-pointer accent-core-accent"
+            {...(isControlled
+              ? { checked: value === option.value }
+              : { defaultChecked: defaultValue === option.value })}
+            onChange={() => onChange?.(option.value)}
+            required={required && (isControlled ? !value : true) && index === 0}
+            disabled={disabled}
+            className="mt-spacing-50 h-spacing-400 w-spacing-400 cursor-pointer accent-core-accent disabled:cursor-not-allowed"
           />
           <span className="flex flex-col gap-spacing-50">
             <span className="font-medium text-body text-content-standard-primary">
@@ -175,6 +192,10 @@ type FileUploadInputProps = {
   hint?: string;
   accept?: string;
   required?: boolean;
+  multiple?: boolean;
+  disabled?: boolean;
+  selectedSummary?: string;
+  onFilesSelected?: (files: FileList | null) => void;
 };
 
 export function FileUploadInput({
@@ -182,6 +203,10 @@ export function FileUploadInput({
   hint,
   accept,
   required,
+  multiple,
+  disabled,
+  selectedSummary,
+  onFilesSelected,
 }: FileUploadInputProps) {
   return (
     <div className="flex flex-col gap-spacing-200">
@@ -190,11 +215,20 @@ export function FileUploadInput({
         type="file"
         accept={accept}
         required={required}
+        multiple={multiple}
+        disabled={disabled}
+        onChange={(event) => onFilesSelected?.(event.target.files)}
         className="hidden"
       />
       <label
         htmlFor={id}
-        className="flex w-full cursor-pointer flex-col items-center justify-center gap-spacing-200 rounded-radius-600 border border-line-outline border-dashed bg-components-fill-standard-secondary p-spacing-600 text-center text-body text-content-standard-secondary transition hover:border-core-accent hover:text-content-standard-primary"
+        className={cn(
+          "flex w-full flex-col items-center justify-center gap-spacing-200 rounded-radius-600 border border-line-outline border-dashed bg-components-fill-standard-secondary p-spacing-600 text-center text-body text-content-standard-secondary transition",
+          disabled
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer hover:border-core-accent hover:text-content-standard-primary",
+        )}
+        aria-disabled={disabled}
       >
         <span className="font-semibold text-content-standard-primary">
           파일 업로드
@@ -203,6 +237,11 @@ export function FileUploadInput({
           최대 10MB (PDF, PNG, JPG)
         </span>
       </label>
+      {selectedSummary ? (
+        <span className="text-body text-content-standard-primary">
+          {selectedSummary}
+        </span>
+      ) : null}
       {hint ? (
         <span className="text-content-standard-tertiary text-label">
           {hint}
