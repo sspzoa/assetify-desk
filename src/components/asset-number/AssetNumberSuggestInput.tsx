@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
+
 import { TextInput } from "@/components/form/form-fields";
-import { ASSET_SEARCH_MIN_LENGTH } from "@/constants/assets";
 import { useAssetSearch } from "@/hooks/useAssetSearch";
 
 type AssetNumberSuggestInputProps = {
@@ -30,10 +31,29 @@ export function AssetNumberSuggestInput({
   inputName,
   placeholder,
 }: AssetNumberSuggestInputProps) {
-  const normalizedRequester = requesterName.trim();
-  const searchQuery = useAssetSearch(normalizedRequester);
+  const [suppressAssetNumberSearch, setSuppressAssetNumberSearch] =
+    useState(false);
+
+  const handleValueChange = (
+    nextValue: string,
+    source: "input" | "suggestion",
+  ) => {
+    setSuppressAssetNumberSearch(source === "suggestion");
+    onChange(nextValue);
+  };
+
+  const searchQuery = useAssetSearch({
+    requesterName,
+    assetNumber: suppressAssetNumberSearch ? "" : value,
+  });
   const assets = searchQuery.data?.assets ?? [];
-  const hasQuery = normalizedRequester.length >= ASSET_SEARCH_MIN_LENGTH;
+  const hasSearchableInput = Boolean(searchQuery.searchMode);
+  const searchContextLabel =
+    searchQuery.searchMode?.type === "name"
+      ? "입력하신 이름"
+      : searchQuery.searchMode?.type === "assetNumber"
+        ? "입력하신 자산 번호"
+        : null;
 
   return (
     <div className="flex flex-col gap-spacing-200">
@@ -42,21 +62,25 @@ export function AssetNumberSuggestInput({
         name={inputName}
         placeholder={placeholder}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => handleValueChange(event.target.value, "input")}
       />
 
-      {!hasQuery ? null : searchQuery.isFetching ? (
+      {!hasSearchableInput ? null : searchQuery.isFetching ? (
         <div className={helperClassName}>자산 번호를 불러오는 중입니다...</div>
       ) : searchQuery.isError ? (
         <div className={cn(helperClassName, "text-core-status-negative")}>
           {searchQuery.error.message}
         </div>
       ) : assets.length === 0 ? (
-        <div className={helperClassName}>자산 번호를 직접 입력해 주세요.</div>
+        <div className={helperClassName}>
+          {searchContextLabel ?? "입력값"}로 등록된 자산을 찾지 못했습니다.
+        </div>
       ) : (
         <div className="flex flex-col gap-spacing-200">
           <span className="text-content-standard-tertiary text-label">
-            검색된 자산 번호를 클릭하면 자동으로 입력됩니다.
+            {searchContextLabel
+              ? `${searchContextLabel}으로 검색된 자산 번호입니다.`
+              : "검색된 자산 번호를 클릭하면 자동으로 입력됩니다."}
           </span>
           <div className="flex flex-col gap-spacing-200">
             {assets.map((asset) => {
@@ -73,7 +97,7 @@ export function AssetNumberSuggestInput({
                 <button
                   key={asset.id}
                   type="button"
-                  onClick={() => onChange(assetNumber)}
+                  onClick={() => handleValueChange(assetNumber, "suggestion")}
                   className={cn(
                     buttonClassName,
                     isSelected

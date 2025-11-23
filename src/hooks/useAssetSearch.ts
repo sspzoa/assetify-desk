@@ -1,17 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { ASSET_SEARCH_MIN_LENGTH } from "@/constants/assets";
+import {
+  ASSET_NUMBER_SEARCH_MIN_LENGTH,
+  ASSET_SEARCH_MIN_LENGTH,
+} from "@/constants/assets";
 import type { AssetSearchResponse } from "@/types/asset";
 
 const ASSET_SEARCH_QUERY_KEY = "asset-search";
 
-const fetchAssetsByName = async (
-  name: string,
+type AssetSearchMode =
+  | { type: "name"; value: string }
+  | { type: "assetNumber"; value: string };
+
+const fetchAssetsByMode = async (
+  mode: AssetSearchMode,
 ): Promise<AssetSearchResponse> => {
-  const response = await fetch(
-    `/api/assets?${new URLSearchParams({ name }).toString()}`,
-    { cache: "no-store" },
-  );
+  const params = new URLSearchParams();
+  if (mode.type === "name") {
+    params.set("name", mode.value);
+  } else {
+    params.set("assetNumber", mode.value);
+  }
+
+  const response = await fetch(`/api/assets?${params.toString()}`, {
+    cache: "no-store",
+  });
   const data = await response.json();
 
   if (!response.ok) {
@@ -21,12 +34,38 @@ const fetchAssetsByName = async (
   return data as AssetSearchResponse;
 };
 
-export function useAssetSearch(name: string) {
-  const normalizedName = name.trim();
-  return useQuery<AssetSearchResponse, Error>({
-    queryKey: [ASSET_SEARCH_QUERY_KEY, normalizedName],
-    queryFn: () => fetchAssetsByName(normalizedName),
-    enabled: normalizedName.length >= ASSET_SEARCH_MIN_LENGTH,
+type UseAssetSearchParams = {
+  requesterName: string;
+  assetNumber: string;
+};
+
+export function useAssetSearch({
+  requesterName,
+  assetNumber,
+}: UseAssetSearchParams) {
+  const normalizedName = requesterName.trim();
+  const normalizedAssetNumber = assetNumber.trim();
+
+  const searchMode: AssetSearchMode | null =
+    normalizedAssetNumber.length >= ASSET_NUMBER_SEARCH_MIN_LENGTH
+      ? { type: "assetNumber", value: normalizedAssetNumber }
+      : normalizedName.length >= ASSET_SEARCH_MIN_LENGTH
+        ? { type: "name", value: normalizedName }
+        : null;
+
+  const queryResult = useQuery<AssetSearchResponse, Error>({
+    queryKey: searchMode
+      ? [ASSET_SEARCH_QUERY_KEY, searchMode.type, searchMode.value]
+      : [ASSET_SEARCH_QUERY_KEY, "idle"],
+    queryFn: () => {
+      if (!searchMode) {
+        return Promise.resolve({ assets: [] });
+      }
+      return fetchAssetsByMode(searchMode);
+    },
+    enabled: Boolean(searchMode),
     staleTime: 1000 * 60,
   });
+
+  return { ...queryResult, searchMode };
 }

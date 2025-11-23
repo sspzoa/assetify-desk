@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { ASSET_SEARCH_MIN_LENGTH } from "@/constants/assets";
+import {
+  ASSET_NUMBER_SEARCH_MIN_LENGTH,
+  ASSET_SEARCH_MIN_LENGTH,
+} from "@/constants/assets";
 import type { AssetRecord } from "@/types/asset";
 
 const ASSETS_DATABASE_ID = process.env.ASSETS_DATABASE_ID;
@@ -69,8 +72,13 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const nameQuery = searchParams.get("name")?.trim() ?? "";
+  const assetNumberQuery = searchParams.get("assetNumber")?.trim() ?? "";
 
-  if (nameQuery.length < ASSET_SEARCH_MIN_LENGTH) {
+  const hasNameQuery = nameQuery.length >= ASSET_SEARCH_MIN_LENGTH;
+  const hasAssetNumberQuery =
+    assetNumberQuery.length >= ASSET_NUMBER_SEARCH_MIN_LENGTH;
+
+  if (!hasNameQuery && !hasAssetNumberQuery) {
     return NextResponse.json({ assets: [] });
   }
 
@@ -83,12 +91,19 @@ export async function GET(request: Request) {
         headers: notionHeaders,
         body: JSON.stringify({
           page_size: 10,
-          filter: {
-            property: PROPERTY_NAMES.user,
-            title: {
-              equals: nameQuery,
-            },
-          },
+          filter: hasAssetNumberQuery
+            ? {
+                property: PROPERTY_NAMES.assetNumber,
+                rich_text: {
+                  contains: assetNumberQuery,
+                },
+              }
+            : {
+                property: PROPERTY_NAMES.user,
+                title: {
+                  equals: nameQuery,
+                },
+              },
         }),
       },
     );
@@ -107,12 +122,14 @@ export async function GET(request: Request) {
       .map(
         (page: {
           id: string;
-            properties?: Record<string, NotionPropertyValue>;
-          }) => {
-            const properties = page.properties ?? {};
-            return {
-              id: page.id,
-              name: maskName(getPlainText(properties[PROPERTY_NAMES.user]) ?? null),
+          properties?: Record<string, NotionPropertyValue>;
+        }) => {
+          const properties = page.properties ?? {};
+          return {
+            id: page.id,
+            name: maskName(
+              getPlainText(properties[PROPERTY_NAMES.user]) ?? null,
+            ),
             assetNumber:
               getPlainText(properties[PROPERTY_NAMES.assetNumber]) ?? null,
             corporation:
