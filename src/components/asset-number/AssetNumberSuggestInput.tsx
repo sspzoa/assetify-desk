@@ -34,18 +34,22 @@ export function AssetNumberSuggestInput({
   const [suppressAssetNumberSearch, setSuppressAssetNumberSearch] =
     useState(false);
 
-  const handleValueChange = (
-    nextValue: string,
-    source: "input" | "suggestion",
-  ) => {
-    setSuppressAssetNumberSearch(source === "suggestion");
-    onChange(nextValue);
-  };
-
   const searchQuery = useAssetSearch({
     requesterName,
     assetNumber: suppressAssetNumberSearch ? "" : value,
   });
+  const currentSearchModeType = searchQuery.searchMode?.type;
+
+  const handleValueChange = (
+    nextValue: string,
+    source: "input" | "suggestion",
+  ) => {
+    const shouldSuppress =
+      source === "suggestion" && currentSearchModeType === "name";
+    setSuppressAssetNumberSearch(shouldSuppress);
+    onChange(nextValue);
+  };
+
   const assets = searchQuery.data?.assets ?? [];
   const hasSearchableInput = Boolean(searchQuery.searchMode);
   const searchContextLabel =
