@@ -1,4 +1,4 @@
-import RepairFormView from "@/components/repair-form/RepairFormView";
+import { RepairFormView } from "@/components/form/TicketFormView";
 import { loadRepairSelectOptions } from "@/utils/notion/repair";
 
 export default async function RepairFormPage() {

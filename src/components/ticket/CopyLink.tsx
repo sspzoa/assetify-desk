@@ -2,7 +2,7 @@
 
 import { useAtom } from "jotai";
 
-import { copyStatusAtom } from "@/store/ticketDetailShared";
+import { copyStatusAtom } from "@/store/form";
 
 type CopyLinkProps = {
   label?: string;

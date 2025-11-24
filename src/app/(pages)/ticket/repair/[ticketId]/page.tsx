@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import RepairTicketDetailView from "@/components/ticket/RepairTicketDetail";
+import { RepairTicketDetailView } from "@/components/ticket/TicketDetailView";
 import { fetchRepairTicketDetail } from "@/utils/notion/repair";
 
 export default async function RepairTicketDetailPage(props: {
@@ -13,7 +13,7 @@ export default async function RepairTicketDetailPage(props: {
 
   try {
     const ticket = await fetchRepairTicketDetail(ticketId);
-    return <RepairTicketDetailView ticketId={ticketId} initialData={ticket} />;
+    return <RepairTicketDetailView ticketId={ticketId} detail={ticket} />;
   } catch (error) {
     console.error("Failed to load repair ticket", error);
     notFound();

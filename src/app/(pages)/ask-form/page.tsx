@@ -1,4 +1,4 @@
-import AskFormView from "@/components/ask-form/AskFormView";
+import { AskFormView } from "@/components/form/TicketFormView";
 import { loadAskSelectOptions } from "@/utils/notion/ask";
 
 export default async function AskFormPage() {

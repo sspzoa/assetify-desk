@@ -6,14 +6,15 @@ import {
   buildRichTextProperty,
   buildSelectProperty,
   buildTitleProperty,
+  clampText,
   ensureOptionValue,
   fetchAskDatabase,
+  isNonEmpty,
   loadAskSelectOptions,
+  NOTION_PAGES_ENDPOINT,
   notionHeaders,
   sanitizeText,
 } from "@/utils/notion/ask";
-
-const NOTION_PAGES_ENDPOINT = "https://api.notion.com/v1/pages";
 
 type AskTicketPayload = {
   corporation: string;
@@ -25,12 +26,6 @@ type AskTicketPayload = {
   requester: string;
   attachments: string[];
 };
-
-const isNonEmpty = (value: string | undefined): value is string =>
-  Boolean(value && value.trim().length > 0);
-
-const clampText = (value: string, limit = 2000) =>
-  value.length > limit ? value.slice(0, limit) : value;
 
 const parsePayload = async (request: Request): Promise<AskTicketPayload> => {
   const body = await request.json().catch(() => {
@@ -92,28 +87,27 @@ export async function POST(request: Request) {
       );
     }
 
-    const selectOptions = await loadAskSelectOptions();
-
+    const options = await loadAskSelectOptions();
     const corporation = ensureOptionValue(
       payload.corporation,
-      selectOptions.corporations,
+      options.corporations,
       "법인",
     );
     const inquiryType = ensureOptionValue(
       payload.inquiryType,
-      selectOptions.inquiryTypes,
+      options.inquiryTypes,
       "문의 유형",
     );
     const urgency = ensureOptionValue(
       payload.urgency,
-      selectOptions.urgencies,
+      options.urgencies,
       "긴급도",
     );
 
-    const titleSource =
-      clampText(payload.detail) || `${payload.requester}님의 문의`;
     const properties: Record<string, unknown> = {
-      [ASK_FIELD_NAMES.title]: buildTitleProperty(titleSource),
+      [ASK_FIELD_NAMES.title]: buildTitleProperty(
+        clampText(payload.detail) || `${payload.requester}님의 문의`,
+      ),
       [ASK_FIELD_NAMES.corporation]: buildSelectProperty(corporation),
       [ASK_FIELD_NAMES.inquiryType]: buildSelectProperty(inquiryType),
       [ASK_FIELD_NAMES.urgency]: buildSelectProperty(urgency),
@@ -126,7 +120,7 @@ export async function POST(request: Request) {
       Object.entries(properties).filter(([, value]) => Boolean(value)),
     );
 
-    const notionResponse = await fetch(NOTION_PAGES_ENDPOINT, {
+    const response = await fetch(NOTION_PAGES_ENDPOINT, {
       method: "POST",
       headers: notionHeaders,
       cache: "no-store",
@@ -136,20 +130,17 @@ export async function POST(request: Request) {
       }),
     });
 
-    const notionData = await notionResponse.json();
+    const data = await response.json();
 
-    if (!notionResponse.ok) {
+    if (!response.ok) {
       const message =
-        typeof notionData?.message === "string"
-          ? notionData.message
+        typeof data?.message === "string"
+          ? data.message
           : "Notion API 요청에 실패했습니다.";
-      return NextResponse.json(
-        { error: message },
-        { status: notionResponse.status },
-      );
+      return NextResponse.json({ error: message }, { status: response.status });
     }
 
-    return NextResponse.json({ id: notionData.id, success: true });
+    return NextResponse.json({ id: data.id, success: true });
   } catch (error) {
     const message =
       error instanceof Error

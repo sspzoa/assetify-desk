@@ -3,17 +3,17 @@ import { NextResponse } from "next/server";
 import {
   ASSET_NUMBER_SEARCH_MIN_LENGTH,
   ASSET_SEARCH_MIN_LENGTH,
-} from "@/constants/assets";
+} from "@/constants";
 import type { AssetRecord } from "@/types/asset";
+import {
+  getPlainText,
+  getSelectName,
+  maskName,
+  notionHeaders,
+} from "@/utils/notion/helpers";
+import type { NotionPropertyValue } from "@/utils/notion/types";
 
 const ASSETS_DATABASE_ID = process.env.ASSETS_DATABASE_ID;
-
-const notionHeaders = {
-  accept: "application/json",
-  "content-type": "application/json",
-  "Notion-Version": "2022-06-28",
-  Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
-};
 
 const PROPERTY_NAMES = {
   user: "사용자",
@@ -21,45 +21,6 @@ const PROPERTY_NAMES = {
   corporation: "법인명",
   department: "부서",
   usageStatus: "사용/재고/폐기/기타",
-};
-
-type NotionTextSpan = {
-  plain_text?: string | null;
-};
-
-type NotionPropertyValue = {
-  type: string;
-  title?: NotionTextSpan[];
-  rich_text?: NotionTextSpan[];
-  select?: { name?: string | null } | null;
-  status?: { name?: string | null } | null;
-};
-
-const getPlainText = (property?: NotionPropertyValue) => {
-  if (!property) return undefined;
-  if (property.type === "title" && property.title) {
-    return property.title
-      .map((item) => item.plain_text ?? "")
-      .join("")
-      .trim();
-  }
-  if (property.rich_text) {
-    return property.rich_text
-      .map((item) => item.plain_text ?? "")
-      .join("")
-      .trim();
-  }
-  return undefined;
-};
-
-const getSelectName = (property?: NotionPropertyValue) =>
-  property?.select?.name ?? property?.status?.name ?? undefined;
-
-const maskName = (name?: string | null) => {
-  if (!name) return null;
-  const trimmed = name.trim();
-  if (trimmed.length < 2) return trimmed || null;
-  return `${trimmed[0]}*${trimmed.slice(2)}`;
 };
 
 export async function GET(request: Request) {
@@ -94,15 +55,11 @@ export async function GET(request: Request) {
           filter: hasAssetNumberQuery
             ? {
                 property: PROPERTY_NAMES.assetNumber,
-                rich_text: {
-                  contains: assetNumberQuery,
-                },
+                rich_text: { contains: assetNumberQuery },
               }
             : {
                 property: PROPERTY_NAMES.user,
-                title: {
-                  equals: nameQuery,
-                },
+                title: { equals: nameQuery },
               },
         }),
       },

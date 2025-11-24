@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import {
-  buildRichTextProperty,
-  buildSelectProperty,
-  buildTitleProperty,
-  ensureOptionValue,
-  NOTION_PAGES_ENDPOINT,
-  notionHeaders,
-  sanitizeText,
-} from "@/utils/notion/ask";
+
 import {
   buildCheckboxProperty,
   buildMultiSelectProperty,
+  buildRichTextProperty,
+  buildSelectProperty,
+  buildTitleProperty,
+  clampText,
+  ensureOptionValue,
+  isNonEmpty,
+  NOTION_PAGES_ENDPOINT,
+  notionHeaders,
+  sanitizeText,
+} from "@/utils/notion/helpers";
+import {
   fetchRepairDatabase,
   loadRepairSelectOptions,
   REPAIR_FIELD_NAMES,
@@ -29,12 +32,6 @@ type RepairTicketPayload = {
   attachments: string[];
   consent: boolean;
 };
-
-const isNonEmpty = (value: string | undefined): value is string =>
-  Boolean(value && value.trim().length > 0);
-
-const clampText = (value: string, limit = 2000) =>
-  value.length > limit ? value.slice(0, limit) : value;
 
 const parsePayload = async (request: Request): Promise<RepairTicketPayload> => {
   const body = await request.json().catch(() => {
@@ -98,32 +95,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const selectOptions = await loadRepairSelectOptions();
-
+    const options = await loadRepairSelectOptions();
     const corporation = ensureOptionValue(
       payload.corporation,
-      selectOptions.corporations,
+      options.corporations,
       "법인",
     );
     const urgency = ensureOptionValue(
       payload.urgency,
-      selectOptions.urgencies,
+      options.urgencies,
       "긴급도",
     );
+    const issueType = payload.issueType
+      ? ensureOptionValue(payload.issueType, options.issueTypes, "고장 내역")
+      : undefined;
 
-    const issueType =
-      payload.issueType && payload.issueType.length > 0
-        ? ensureOptionValue(
-            payload.issueType,
-            selectOptions.issueTypes,
-            "고장 내역",
-          )
-        : undefined;
-
-    const titleSource =
-      clampText(payload.detail) || `${payload.requester}님의 수리 요청`;
     const properties: Record<string, unknown> = {
-      [REPAIR_FIELD_NAMES.title]: buildTitleProperty(titleSource),
+      [REPAIR_FIELD_NAMES.title]: buildTitleProperty(
+        clampText(payload.detail) || `${payload.requester}님의 수리 요청`,
+      ),
       [REPAIR_FIELD_NAMES.corporation]: buildSelectProperty(corporation),
       [REPAIR_FIELD_NAMES.urgency]: buildSelectProperty(urgency),
       [REPAIR_FIELD_NAMES.issueType]: buildMultiSelectProperty(
@@ -144,7 +134,7 @@ export async function POST(request: Request) {
       Object.entries(properties).filter(([, value]) => Boolean(value)),
     );
 
-    const notionResponse = await fetch(NOTION_PAGES_ENDPOINT, {
+    const response = await fetch(NOTION_PAGES_ENDPOINT, {
       method: "POST",
       headers: notionHeaders,
       cache: "no-store",
@@ -154,20 +144,17 @@ export async function POST(request: Request) {
       }),
     });
 
-    const notionData = await notionResponse.json();
+    const data = await response.json();
 
-    if (!notionResponse.ok) {
+    if (!response.ok) {
       const message =
-        typeof notionData?.message === "string"
-          ? notionData.message
+        typeof data?.message === "string"
+          ? data.message
           : "Notion API 요청에 실패했습니다.";
-      return NextResponse.json(
-        { error: message },
-        { status: notionResponse.status },
-      );
+      return NextResponse.json({ error: message }, { status: response.status });
     }
 
-    return NextResponse.json({ id: notionData.id, success: true });
+    return NextResponse.json({ id: data.id, success: true });
   } catch (error) {
     const message =
       error instanceof Error

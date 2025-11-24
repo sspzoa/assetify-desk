@@ -1,2 +1,0 @@
-export const ASSET_SEARCH_MIN_LENGTH = 2;
-export const ASSET_NUMBER_SEARCH_MIN_LENGTH = 4;

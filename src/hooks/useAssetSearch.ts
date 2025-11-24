@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ASSET_NUMBER_SEARCH_MIN_LENGTH,
   ASSET_SEARCH_MIN_LENGTH,
-} from "@/constants/assets";
+} from "@/constants";
 import type { AssetSearchResponse } from "@/types/asset";
 
 const ASSET_SEARCH_QUERY_KEY = "asset-search";
