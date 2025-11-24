@@ -60,7 +60,7 @@ export default function Home() {
       <div className="mb-spacing-1000 flex w-full max-w-[768px] flex-col items-center justify-center gap-spacing-500 p-spacing-700 md:flex-row">
         {/* 문의하기 링크 */}
         <Link
-          href="/ask-form"
+          href="/inquiry-form"
           className="flex w-full cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
         >
           <span className="font-semibold text-heading">문의하기</span>

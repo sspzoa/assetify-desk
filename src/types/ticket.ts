@@ -17,7 +17,7 @@ export type BaseTicketDetail = {
 };
 
 // 문의 티켓 상세 정보 타입
-export type AskTicketDetail = BaseTicketDetail & {
+export type InquiryTicketDetail = BaseTicketDetail & {
   inquiryType?: string; // 문의 유형
 };
 
@@ -45,7 +45,7 @@ export type BaseFormState = {
 };
 
 // 문의 폼 상태 타입
-export type AskFormState = BaseFormState & {
+export type InquiryFormState = BaseFormState & {
   inquiryType: string; // 문의 유형
 };
 
@@ -69,7 +69,7 @@ export type BaseFormOptions = {
 };
 
 // 문의 폼 옵션 타입
-export type AskFormOptions = BaseFormOptions & {
+export type InquiryFormOptions = BaseFormOptions & {
   inquiryTypes: string[]; // 문의 유형 목록
 };
 
@@ -79,4 +79,4 @@ export type RepairFormOptions = BaseFormOptions & {
 };
 
 // 티켓 종류 타입
-export type TicketType = "ask" | "repair";
+export type TicketType = "inquiry" | "repair";

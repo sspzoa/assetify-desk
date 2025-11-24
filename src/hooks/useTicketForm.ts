@@ -5,24 +5,24 @@ import type { PrimitiveAtom } from "jotai";
 import { useAtom, useSetAtom } from "jotai";
 
 import {
-  askFormResultAtom,
-  askFormStateAtom,
-  initialAskFormState,
+  initialInquiryFormState,
   initialRepairFormState,
+  inquiryFormResultAtom,
+  inquiryFormStateAtom,
   repairFormResultAtom,
   repairFormStateAtom,
 } from "@/store/form";
 import type {
-  AskFormOptions,
-  AskFormState,
   FormResult,
+  InquiryFormOptions,
+  InquiryFormState,
   RepairFormOptions,
   RepairFormState,
 } from "@/types/ticket";
 
 // 문의 폼 옵션 조회 API 호출
-const fetchAskOptions = async (): Promise<AskFormOptions> => {
-  const response = await fetch("/api/ticket/ask/options", {
+const fetchInquiryOptions = async (): Promise<InquiryFormOptions> => {
+  const response = await fetch("/api/ticket/inquiry/options", {
     cache: "no-store",
   });
   const data = await response.json();
@@ -36,8 +36,8 @@ const fetchAskOptions = async (): Promise<AskFormOptions> => {
 };
 
 // 문의 티켓 제출 API 호출
-const submitAskTicket = async (payload: AskFormState) => {
-  const response = await fetch("/api/ticket/ask", {
+const submitInquiryTicket = async (payload: InquiryFormState) => {
+  const response = await fetch("/api/ticket/inquiry", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -48,34 +48,34 @@ const submitAskTicket = async (payload: AskFormState) => {
 };
 
 // 문의 폼 옵션 조회 훅
-export function useAskFormOptions(initialData?: AskFormOptions) {
-  return useQuery<AskFormOptions, Error>({
-    queryKey: ["ask-form-options"],
-    queryFn: fetchAskOptions,
+export function useInquiryFormOptions(initialData?: InquiryFormOptions) {
+  return useQuery<InquiryFormOptions, Error>({
+    queryKey: ["inquiry-form-options"],
+    queryFn: fetchInquiryOptions,
     initialData,
   });
 }
 
 // 문의 폼 상태 관리 훅
-export function useAskFormState() {
-  return useFormState(askFormStateAtom, initialAskFormState);
+export function useInquiryFormState() {
+  return useFormState(inquiryFormStateAtom, initialInquiryFormState);
 }
 
 // 문의 폼 결과 관리 훅
-export function useAskFormResult() {
-  const [result, setResult] = useAtom(askFormResultAtom);
+export function useInquiryFormResult() {
+  const [result, setResult] = useAtom(inquiryFormResultAtom);
   return { result, clearResult: () => setResult(null) };
 }
 
 // 문의 폼 제출 훅
-export function useSubmitAskForm(params?: {
+export function useSubmitInquiryForm(params?: {
   onSuccess?: (data: { id: string }) => void;
 }) {
   return useSubmitForm({
-    mutationFn: submitAskTicket,
-    stateAtom: askFormStateAtom,
-    resultAtom: askFormResultAtom,
-    initialState: initialAskFormState,
+    mutationFn: submitInquiryTicket,
+    stateAtom: inquiryFormStateAtom,
+    resultAtom: inquiryFormResultAtom,
+    initialState: initialInquiryFormState,
     errorMessage: "문의 등록에 실패했습니다.",
     onSuccess: params?.onSuccess,
   });

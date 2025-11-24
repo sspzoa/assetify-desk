@@ -13,17 +13,20 @@ import {
   TextInput,
 } from "@/components/form/form-fields";
 import {
-  useAskFormOptions,
-  useAskFormResult,
-  useAskFormState,
+  useInquiryFormOptions,
+  useInquiryFormResult,
+  useInquiryFormState,
   useRepairFormOptions,
   useRepairFormResult,
   useRepairFormState,
-  useSubmitAskForm,
+  useSubmitInquiryForm,
   useSubmitRepairForm,
 } from "@/hooks/useTicketForm";
-import { initialAskFormOptions, initialRepairFormOptions } from "@/store/form";
-import type { AskFormOptions, RepairFormOptions } from "@/types/ticket";
+import {
+  initialInquiryFormOptions,
+  initialRepairFormOptions,
+} from "@/store/form";
+import type { InquiryFormOptions, RepairFormOptions } from "@/types/ticket";
 
 // 문의 유형별 설명
 const inquiryTypeDescriptions: Record<string, string> = {
@@ -51,29 +54,29 @@ const buildSelectOptions = (
 };
 
 // 문의 폼 뷰 Props 타입
-type AskFormViewProps = {
-  initialOptions?: AskFormOptions;
+type InquiryFormViewProps = {
+  initialOptions?: InquiryFormOptions;
   initialError?: string | null;
 };
 
 // 문의 폼 뷰 컴포넌트
-export function AskFormView({
+export function InquiryFormView({
   initialOptions,
   initialError,
-}: AskFormViewProps) {
+}: InquiryFormViewProps) {
   const router = useRouter();
   const [fileInputKey, setFileInputKey] = useState(0); // 파일 입력 초기화용 키
-  const { formState, updateField } = useAskFormState();
-  const { result } = useAskFormResult();
-  const optionsQuery = useAskFormOptions(initialOptions);
-  const submitMutation = useSubmitAskForm({
+  const { formState, updateField } = useInquiryFormState();
+  const { result } = useInquiryFormResult();
+  const optionsQuery = useInquiryFormOptions(initialOptions);
+  const submitMutation = useSubmitInquiryForm({
     onSuccess: (data) => {
       setFileInputKey((prev) => prev + 1); // 파일 입력 초기화
-      router.push(`/ticket/ask/${data.id}`); // 상세 페이지로 이동
+      router.push(`/ticket/inquiry/${data.id}`); // 상세 페이지로 이동
     },
   });
 
-  const options = optionsQuery.data ?? initialAskFormOptions;
+  const options = optionsQuery.data ?? initialInquiryFormOptions;
   const hasOptions = Boolean(optionsQuery.data);
   const optionsError = hasOptions
     ? null
@@ -110,7 +113,7 @@ export function AskFormView({
   return (
     <div className="flex flex-col items-center justify-start gap-spacing-700 px-spacing-700 py-spacing-900">
       <span className="font-semibold text-display">
-        Ask Form<span className="text-core-accent">.</span>
+        Inquiry Form<span className="text-core-accent">.</span>
       </span>
 
       {/* 옵션 로드 에러 메시지 */}

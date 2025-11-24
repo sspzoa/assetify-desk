@@ -5,7 +5,7 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 
-import { fetchAskTicketDetail } from "@/utils/notion/ask";
+import { fetchInquiryTicketDetail } from "@/utils/notion/inquiry";
 
 // 라우트 컨텍스트 타입 정의
 type RouteContext = {
@@ -13,7 +13,7 @@ type RouteContext = {
 };
 
 /**
- * GET /api/ticket/ask/[ticketId]
+ * GET /api/ticket/inquiry/[ticketId]
  * 특정 문의 티켓 상세 정보 조회
  * @param context - ticketId를 포함한 라우트 컨텍스트
  * @returns 문의 티켓 상세 정보
@@ -30,7 +30,7 @@ export async function GET(_: NextRequest, context: RouteContext) {
   }
 
   try {
-    const detail = await fetchAskTicketDetail(ticketId);
+    const detail = await fetchInquiryTicketDetail(ticketId);
     return NextResponse.json(detail);
   } catch (error) {
     const message =

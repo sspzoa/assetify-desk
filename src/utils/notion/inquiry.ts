@@ -1,4 +1,4 @@
-import type { AskTicketDetail } from "@/types/ticket";
+import type { InquiryTicketDetail } from "@/types/ticket";
 import {
   archiveNotionPage,
   extractOptions,
@@ -25,7 +25,8 @@ export {
 } from "@/utils/notion/helpers";
 
 // 문의 티켓 데이터베이스 ID
-export const ASK_TICKETS_DATABASE_ID = process.env.ASK_TICKETS_DATABASE_ID;
+export const INQUIRY_TICKETS_DATABASE_ID =
+  process.env.INQUIRY_TICKETS_DATABASE_ID;
 
 // 문의 티켓 필드명 매핑
 const FIELD_NAMES = {
@@ -42,26 +43,26 @@ const FIELD_NAMES = {
   attachments: "첨부파일",
 };
 
-export const ASK_FIELD_NAMES = FIELD_NAMES;
+export const INQUIRY_FIELD_NAMES = FIELD_NAMES;
 
 // 문의 선택 옵션 타입
-export type AskSelectOptions = {
+export type InquirySelectOptions = {
   corporations: string[]; // 법인 목록
   inquiryTypes: string[]; // 문의 유형 목록
   urgencies: string[]; // 긴급도 목록
 };
 
 // 문의 데이터베이스 정보 조회
-export async function fetchAskDatabase() {
-  if (!ASK_TICKETS_DATABASE_ID) {
-    throw new Error("ASK_TICKETS_DATABASE_ID is not configured");
+export async function fetchInquiryDatabase() {
+  if (!INQUIRY_TICKETS_DATABASE_ID) {
+    throw new Error("INQUIRY_TICKETS_DATABASE_ID is not configured");
   }
-  return fetchNotionDatabase(ASK_TICKETS_DATABASE_ID);
+  return fetchNotionDatabase(INQUIRY_TICKETS_DATABASE_ID);
 }
 
 // 문의 폼 선택 옵션 로드
-export async function loadAskSelectOptions(): Promise<AskSelectOptions> {
-  const database = await fetchAskDatabase();
+export async function loadInquirySelectOptions(): Promise<InquirySelectOptions> {
+  const database = await fetchInquiryDatabase();
   const properties = database.properties ?? {};
   return {
     corporations: extractOptions(properties[FIELD_NAMES.corporation]),
@@ -71,9 +72,9 @@ export async function loadAskSelectOptions(): Promise<AskSelectOptions> {
 }
 
 // 문의 티켓 상세 정보 조회
-export async function fetchAskTicketDetail(
+export async function fetchInquiryTicketDetail(
   ticketId: string,
-): Promise<AskTicketDetail> {
+): Promise<InquiryTicketDetail> {
   const data = await fetchNotionPage(ticketId);
   const properties = data.properties as
     | Record<string, NotionPropertyValue>
@@ -103,6 +104,6 @@ export async function fetchAskTicketDetail(
 }
 
 // 문의 티켓 삭제 (보관 처리)
-export async function deleteAskTicket(ticketId: string) {
+export async function deleteInquiryTicket(ticketId: string) {
   await archiveNotionPage(ticketId, "문의 삭제에 실패했습니다.");
 }

@@ -6,12 +6,12 @@ import { useAtom } from "jotai";
 
 import { CANCELABLE_STATUS } from "@/constants";
 import {
-  askCancelStatusAtom,
+  inquiryCancelStatusAtom,
   type CancelStatus,
   repairCancelStatusAtom,
 } from "@/store/form";
 import type {
-  AskTicketDetail,
+  InquiryTicketDetail,
   RepairTicketDetail,
   TicketType,
 } from "@/types/ticket";
@@ -66,12 +66,12 @@ type TicketConfig<T> = {
 };
 
 // 문의 티켓 설정
-const askConfig: TicketConfig<AskTicketDetail> = {
-  type: "ask",
-  title: "Ask Detail",
-  queryKey: "ask-ticket-detail",
-  cancelEndpoint: "/api/ticket/ask",
-  cancelAtom: askCancelStatusAtom,
+const inquiryConfig: TicketConfig<InquiryTicketDetail> = {
+  type: "inquiry",
+  title: "Inquiry Detail",
+  queryKey: "inquiry-ticket-detail",
+  cancelEndpoint: "/api/ticket/inquiry",
+  cancelAtom: inquiryCancelStatusAtom,
   cancelErrorMessage: "문의 취소에 실패했습니다. 다시 시도해주세요.",
   cancelButtonText: "문의 취소하기",
   // 취소 가능 여부 판단
@@ -153,7 +153,7 @@ type TicketDetailViewProps<T> = {
 
 // 티켓 상세 뷰 컴포넌트
 export default function TicketDetailView<
-  T extends AskTicketDetail | RepairTicketDetail,
+  T extends InquiryTicketDetail | RepairTicketDetail,
 >({
   ticketId,
   detail,
@@ -161,7 +161,7 @@ export default function TicketDetailView<
   isError,
   extraStatusCards,
 }: TicketDetailViewProps<T>) {
-  const config = type === "ask" ? askConfig : repairConfig;
+  const config = type === "inquiry" ? inquiryConfig : repairConfig;
   const queryClient = useQueryClient();
 
   // 제출 날짜 포맷팅
@@ -286,20 +286,20 @@ export default function TicketDetailView<
 }
 
 // 문의 티켓 상세 뷰 컴포넌트
-export function AskTicketDetailView({
+export function InquiryTicketDetailView({
   ticketId,
   detail,
   isError,
 }: {
   ticketId: string;
-  detail: AskTicketDetail;
+  detail: InquiryTicketDetail;
   isError?: boolean;
 }) {
   return (
     <TicketDetailView
       ticketId={ticketId}
       detail={detail}
-      type="ask"
+      type="inquiry"
       isError={isError}
     />
   );

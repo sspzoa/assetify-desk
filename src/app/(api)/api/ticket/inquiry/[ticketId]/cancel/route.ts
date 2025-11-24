@@ -5,7 +5,10 @@
 
 import { NextResponse } from "next/server";
 
-import { deleteAskTicket, fetchAskTicketDetail } from "@/utils/notion/ask";
+import {
+  deleteInquiryTicket,
+  fetchInquiryTicketDetail,
+} from "@/utils/notion/inquiry";
 
 // 라우트 컨텍스트 타입 정의
 type RouteContext = {
@@ -13,7 +16,7 @@ type RouteContext = {
 };
 
 /**
- * POST /api/ticket/ask/[ticketId]/cancel
+ * POST /api/ticket/inquiry/[ticketId]/cancel
  * 문의 티켓 취소 처리
  * @param context - ticketId를 포함한 라우트 컨텍스트
  * @returns 취소 성공 여부
@@ -31,7 +34,7 @@ export async function POST(_: Request, context: RouteContext) {
 
   try {
     // 티켓 상세 정보 조회
-    const detail = await fetchAskTicketDetail(ticketId);
+    const detail = await fetchInquiryTicketDetail(ticketId);
 
     // 이미 취소된 티켓인지 확인
     if (detail.archived) {
@@ -58,7 +61,7 @@ export async function POST(_: Request, context: RouteContext) {
     }
 
     // 티켓 삭제 처리
-    await deleteAskTicket(ticketId);
+    await deleteInquiryTicket(ticketId);
     return NextResponse.json({ success: true });
   } catch (error) {
     const message =

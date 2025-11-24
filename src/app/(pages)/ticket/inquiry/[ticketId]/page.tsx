@@ -5,14 +5,14 @@
 
 import { notFound } from "next/navigation";
 
-import { AskTicketDetailView } from "@/components/ticket/TicketDetailView";
-import { fetchAskTicketDetail } from "@/utils/notion/ask";
+import { InquiryTicketDetailView } from "@/components/ticket/TicketDetailView";
+import { fetchInquiryTicketDetail } from "@/utils/notion/inquiry";
 
 /**
  * 문의 티켓 상세 페이지 컴포넌트
  * URL 파라미터로 받은 티켓 ID로 상세 정보를 조회
  */
-export default async function AskTicketDetailPage(props: {
+export default async function InquiryTicketDetailPage(props: {
   params: Promise<{ ticketId: string }>;
 }) {
   // URL에서 티켓 ID 추출
@@ -23,11 +23,13 @@ export default async function AskTicketDetailPage(props: {
 
   try {
     // Notion에서 티켓 상세 정보 조회
-    const ticket = await fetchAskTicketDetail(ticketId);
-    return <AskTicketDetailView ticketId={ticketId} detail={ticket} />;
+    const ticket = await fetchInquiryTicketDetail(ticketId);
+    return (
+      <InquiryTicketDetailView ticketId={ticketId} detail={ticket} />
+    );
   } catch (error) {
     // 티켓 조회 실패 시 404 페이지로 이동
-    console.error("Failed to load ticket", error);
+    console.error("Failed to load inquiry ticket", error);
     notFound();
   }
 }

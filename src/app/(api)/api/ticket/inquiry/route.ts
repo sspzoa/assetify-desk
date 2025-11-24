@@ -6,23 +6,23 @@
 import { NextResponse } from "next/server";
 
 import {
-  ASK_FIELD_NAMES,
-  ASK_TICKETS_DATABASE_ID,
+  INQUIRY_FIELD_NAMES,
+  INQUIRY_TICKETS_DATABASE_ID,
   buildRichTextProperty,
   buildSelectProperty,
   buildTitleProperty,
   clampText,
   ensureOptionValue,
-  fetchAskDatabase,
+  fetchInquiryDatabase,
   isNonEmpty,
-  loadAskSelectOptions,
+  loadInquirySelectOptions,
   NOTION_PAGES_ENDPOINT,
   notionHeaders,
   sanitizeText,
-} from "@/utils/notion/ask";
+} from "@/utils/notion/inquiry";
 
 // 문의 티켓 요청 페이로드 타입
-type AskTicketPayload = {
+type InquiryTicketPayload = {
   corporation: string;
   department?: string;
   assetNumber: string;
@@ -38,7 +38,9 @@ type AskTicketPayload = {
  * @param request - HTTP 요청 객체
  * @returns 파싱된 페이로드
  */
-const parsePayload = async (request: Request): Promise<AskTicketPayload> => {
+const parsePayload = async (
+  request: Request,
+): Promise<InquiryTicketPayload> => {
   const body = await request.json().catch(() => {
     throw new Error("유효한 JSON 요청이 필요합니다.");
   });
@@ -63,34 +65,34 @@ const parsePayload = async (request: Request): Promise<AskTicketPayload> => {
 };
 
 /**
- * GET /api/ticket/ask
+ * GET /api/ticket/inquiry
  * 문의 티켓 데이터베이스 정보 조회
  * @returns 데이터베이스 정보
  */
 export async function GET() {
   try {
-    const data = await fetchAskDatabase();
+    const data = await fetchInquiryDatabase();
     return NextResponse.json(data);
   } catch (error) {
     const message =
       error instanceof Error
         ? error.message
-        : "Failed to load ASK ticket database.";
+        : "Failed to load inquiry ticket database.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 /**
- * POST /api/ticket/ask
+ * POST /api/ticket/inquiry
  * 새 문의 티켓 생성
  * @param request - 문의 내용이 포함된 요청
  * @returns 생성된 티켓 ID 및 성공 여부
  */
 export async function POST(request: Request) {
   // 환경 변수 확인
-  if (!ASK_TICKETS_DATABASE_ID) {
+  if (!INQUIRY_TICKETS_DATABASE_ID) {
     return NextResponse.json(
-      { error: "ASK_TICKETS_DATABASE_ID is not configured." },
+      { error: "INQUIRY_TICKETS_DATABASE_ID is not configured." },
       { status: 500 },
     );
   }
@@ -113,7 +115,7 @@ export async function POST(request: Request) {
     }
 
     // 선택 옵션 로드 및 검증
-    const options = await loadAskSelectOptions();
+    const options = await loadInquirySelectOptions();
     const corporation = ensureOptionValue(
       payload.corporation,
       options.corporations,
@@ -132,15 +134,21 @@ export async function POST(request: Request) {
 
     // Notion 페이지 속성 구성
     const properties: Record<string, unknown> = {
-      [ASK_FIELD_NAMES.title]: buildTitleProperty(
+      [INQUIRY_FIELD_NAMES.title]: buildTitleProperty(
         clampText(payload.detail) || `${payload.requester}님의 문의`,
       ),
-      [ASK_FIELD_NAMES.corporation]: buildSelectProperty(corporation),
-      [ASK_FIELD_NAMES.inquiryType]: buildSelectProperty(inquiryType),
-      [ASK_FIELD_NAMES.urgency]: buildSelectProperty(urgency),
-      [ASK_FIELD_NAMES.assetNumber]: buildRichTextProperty(payload.assetNumber),
-      [ASK_FIELD_NAMES.requester]: buildRichTextProperty(payload.requester),
-      [ASK_FIELD_NAMES.department]: buildRichTextProperty(payload.department),
+      [INQUIRY_FIELD_NAMES.corporation]: buildSelectProperty(corporation),
+      [INQUIRY_FIELD_NAMES.inquiryType]: buildSelectProperty(inquiryType),
+      [INQUIRY_FIELD_NAMES.urgency]: buildSelectProperty(urgency),
+      [INQUIRY_FIELD_NAMES.assetNumber]: buildRichTextProperty(
+        payload.assetNumber,
+      ),
+      [INQUIRY_FIELD_NAMES.requester]: buildRichTextProperty(
+        payload.requester,
+      ),
+      [INQUIRY_FIELD_NAMES.department]: buildRichTextProperty(
+        payload.department,
+      ),
     };
 
     // 빈 값 제거
@@ -154,7 +162,7 @@ export async function POST(request: Request) {
       headers: notionHeaders,
       cache: "no-store",
       body: JSON.stringify({
-        parent: { database_id: ASK_TICKETS_DATABASE_ID },
+        parent: { database_id: INQUIRY_TICKETS_DATABASE_ID },
         properties: filteredProperties,
       }),
     });

@@ -6,7 +6,8 @@
 import { NextResponse } from "next/server";
 
 // Notion 데이터베이스 ID 환경 변수
-const ASK_TICKETS_DATABASE_ID = process.env.ASK_TICKETS_DATABASE_ID;
+const INQUIRY_TICKETS_DATABASE_ID =
+  process.env.INQUIRY_TICKETS_DATABASE_ID;
 const ASSETS_DATABASE_ID = process.env.ASSETS_DATABASE_ID;
 const REPAIR_TICKETS_DATABASE_ID = process.env.REPAIR_TICKETS_DATABASE_ID;
 
@@ -27,7 +28,7 @@ export async function GET() {
   try {
     // 확인할 데이터베이스 URL 목록
     const urls = [
-      `https://api.notion.com/v1/databases/${ASK_TICKETS_DATABASE_ID}`,
+      `https://api.notion.com/v1/databases/${INQUIRY_TICKETS_DATABASE_ID}`,
       `https://api.notion.com/v1/databases/${ASSETS_DATABASE_ID}`,
       `https://api.notion.com/v1/databases/${REPAIR_TICKETS_DATABASE_ID}`,
     ];

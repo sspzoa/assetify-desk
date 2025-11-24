@@ -1,15 +1,15 @@
 import { atom } from "jotai";
 
 import type {
-  AskFormOptions,
-  AskFormState,
   FormResult,
+  InquiryFormOptions,
+  InquiryFormState,
   RepairFormOptions,
   RepairFormState,
 } from "@/types/ticket";
 
 // 문의 폼 초기 상태
-export const initialAskFormState: AskFormState = {
+export const initialInquiryFormState: InquiryFormState = {
   corporation: "",
   department: "",
   assetNumber: "",
@@ -35,7 +35,7 @@ export const initialRepairFormState: RepairFormState = {
 };
 
 // 문의 폼 옵션 초기값
-export const initialAskFormOptions: AskFormOptions = {
+export const initialInquiryFormOptions: InquiryFormOptions = {
   corporations: [],
   inquiryTypes: [],
   urgencies: [],
@@ -49,9 +49,11 @@ export const initialRepairFormOptions: RepairFormOptions = {
 };
 
 // 문의 폼 상태 아톰
-export const askFormStateAtom = atom<AskFormState>(initialAskFormState);
+export const inquiryFormStateAtom = atom<InquiryFormState>(
+  initialInquiryFormState,
+);
 // 문의 폼 결과 아톰
-export const askFormResultAtom = atom<FormResult>(null);
+export const inquiryFormResultAtom = atom<FormResult>(null);
 
 // 수리 폼 상태 아톰
 export const repairFormStateAtom = atom<RepairFormState>(
@@ -70,6 +72,6 @@ export type CancelStatus =
   | { state: "error"; message: string }; // 에러 발생
 
 // 문의 티켓 취소 상태 아톰
-export const askCancelStatusAtom = atom<CancelStatus>({ state: "idle" });
+export const inquiryCancelStatusAtom = atom<CancelStatus>({ state: "idle" });
 // 수리 티켓 취소 상태 아톰
 export const repairCancelStatusAtom = atom<CancelStatus>({ state: "idle" });

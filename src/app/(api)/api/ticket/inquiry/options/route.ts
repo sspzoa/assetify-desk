@@ -5,16 +5,16 @@
 
 import { NextResponse } from "next/server";
 
-import { loadAskSelectOptions } from "@/utils/notion/ask";
+import { loadInquirySelectOptions } from "@/utils/notion/inquiry";
 
 /**
- * GET /api/ticket/ask/options
+ * GET /api/ticket/inquiry/options
  * 문의 티켓 등록에 필요한 선택 옵션 조회
  * @returns 법인, 문의 유형, 긴급도 등의 선택 옵션
  */
 export async function GET() {
   try {
-    const options = await loadAskSelectOptions();
+    const options = await loadInquirySelectOptions();
     return NextResponse.json(options);
   } catch (error) {
     const message =

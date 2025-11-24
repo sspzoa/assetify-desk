@@ -2,11 +2,16 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import type { AskTicketDetail, RepairTicketDetail } from "@/types/ticket";
+import type {
+  InquiryTicketDetail,
+  RepairTicketDetail,
+} from "@/types/ticket";
 
 // 문의 티켓 상세 정보 조회 API 호출
-const fetchAskDetail = async (ticketId: string): Promise<AskTicketDetail> => {
-  const response = await fetch(`/api/ticket/ask/${ticketId}`, {
+const fetchInquiryDetail = async (
+  ticketId: string,
+): Promise<InquiryTicketDetail> => {
+  const response = await fetch(`/api/ticket/inquiry/${ticketId}`, {
     cache: "no-store",
   });
   const data = await response.json();
@@ -29,13 +34,13 @@ const fetchRepairDetail = async (
 };
 
 // 문의 티켓 상세 정보 조회 훅
-export function useAskTicketDetail(
+export function useInquiryTicketDetail(
   ticketId: string,
-  initialData?: AskTicketDetail,
+  initialData?: InquiryTicketDetail,
 ) {
-  return useQuery<AskTicketDetail>({
-    queryKey: ["ask-ticket-detail", ticketId],
-    queryFn: () => fetchAskDetail(ticketId),
+  return useQuery<InquiryTicketDetail>({
+    queryKey: ["inquiry-ticket-detail", ticketId],
+    queryFn: () => fetchInquiryDetail(ticketId),
     initialData,
     enabled: Boolean(ticketId), // ticketId가 있을 때만 조회
     staleTime: 1000 * 30, // 30초간 캐시 유지
