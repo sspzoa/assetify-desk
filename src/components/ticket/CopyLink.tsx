@@ -4,12 +4,14 @@ import { useAtom } from "jotai";
 
 import { copyStatusAtom } from "@/store/form";
 
+// 링크 복사 컴포넌트 Props 타입
 type CopyLinkProps = {
-  label?: string;
-  buttonText?: string;
-  successText?: string;
+  label?: string; // 안내 문구
+  buttonText?: string; // 버튼 텍스트
+  successText?: string; // 복사 성공 텍스트
 };
 
+// 링크 복사 컴포넌트
 export default function CopyLink({
   label = "이 링크를 통해 진행 상황을 확인할 수 있어요",
   buttonText = "링크 복사하기",
@@ -17,10 +19,12 @@ export default function CopyLink({
 }: CopyLinkProps = {}) {
   const [status, setStatus] = useAtom(copyStatusAtom);
 
+  // 클립보드에 현재 URL 복사
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setStatus("copied");
+      // 2초 후 상태 초기화
       setTimeout(() => setStatus("idle"), 2000);
     } catch (error) {
       console.error("Failed to copy link", error);

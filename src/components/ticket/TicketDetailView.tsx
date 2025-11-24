@@ -19,11 +19,13 @@ import { formatValue } from "@/utils/formatValue";
 
 import CopyLink from "./CopyLink";
 
+// 상세 정보 행 Props 타입
 type DetailRowProps = {
   label: string;
   value?: string | string[] | null;
 };
 
+// 상세 정보 행 컴포넌트
 const DetailRow = ({ label, value }: DetailRowProps) => (
   <div className="flex flex-col gap-spacing-50 py-spacing-300">
     <span className="text-content-standard-tertiary text-label">{label}</span>
@@ -33,11 +35,13 @@ const DetailRow = ({ label, value }: DetailRowProps) => (
   </div>
 );
 
+// 상태 카드 Props 타입
 type StatusCardProps = {
   label: string;
   value?: string | null;
 };
 
+// 상태 카드 컴포넌트
 const StatusCard = ({ label, value }: StatusCardProps) => (
   <div className="flex min-w-[220px] flex-1 flex-col gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-400">
     <span className="text-content-standard-tertiary text-label">{label}</span>
@@ -47,6 +51,7 @@ const StatusCard = ({ label, value }: StatusCardProps) => (
   </div>
 );
 
+// 티켓 설정 타입
 type TicketConfig<T> = {
   type: TicketType;
   title: string;
@@ -60,6 +65,7 @@ type TicketConfig<T> = {
   detailRows: (detail: T, submittedAt: string) => DetailRowProps[];
 };
 
+// 문의 티켓 설정
 const askConfig: TicketConfig<AskTicketDetail> = {
   type: "ask",
   title: "Ask Detail",
@@ -68,6 +74,7 @@ const askConfig: TicketConfig<AskTicketDetail> = {
   cancelAtom: askCancelStatusAtom,
   cancelErrorMessage: "문의 취소에 실패했습니다. 다시 시도해주세요.",
   cancelButtonText: "문의 취소하기",
+  // 취소 가능 여부 판단
   isCancelable: (detail) => {
     const hasAssignee =
       typeof detail.assignee === "string" && detail.assignee.trim().length > 0;
@@ -77,10 +84,12 @@ const askConfig: TicketConfig<AskTicketDetail> = {
       (!detail.status || detail.status === CANCELABLE_STATUS)
     );
   },
+  // 상태 카드 데이터
   statusCards: (detail) => [
     { label: "상태", value: detail.status },
     { label: "담당자", value: detail.assignee },
   ],
+  // 상세 정보 행 데이터
   detailRows: (detail, submittedAt) => [
     { label: "법인", value: detail.corporation },
     { label: "부서", value: detail.department },
@@ -94,6 +103,7 @@ const askConfig: TicketConfig<AskTicketDetail> = {
   ],
 };
 
+// 수리 티켓 설정
 const repairConfig: TicketConfig<RepairTicketDetail> = {
   type: "repair",
   title: "Repair Detail",
@@ -102,6 +112,7 @@ const repairConfig: TicketConfig<RepairTicketDetail> = {
   cancelAtom: repairCancelStatusAtom,
   cancelErrorMessage: "수리 요청 취소에 실패했습니다. 다시 시도해주세요.",
   cancelButtonText: "수리 요청 취소하기",
+  // 취소 가능 여부 판단
   isCancelable: (detail) => {
     const hasAssignee =
       typeof detail.assignee === "string" && detail.assignee.trim().length > 0;
@@ -110,10 +121,12 @@ const repairConfig: TicketConfig<RepairTicketDetail> = {
       (!detail.progressStatus || detail.progressStatus === CANCELABLE_STATUS);
     return !detail.archived && !hasAssignee && isCancelableStatus;
   },
+  // 상태 카드 데이터
   statusCards: (detail) => [
     { label: "상태", value: detail.status },
     { label: "진행 상황", value: detail.progressStatus },
   ],
+  // 상세 정보 행 데이터
   detailRows: (detail, submittedAt) => [
     { label: "법인", value: detail.corporation },
     { label: "부서", value: detail.department },
@@ -129,6 +142,7 @@ const repairConfig: TicketConfig<RepairTicketDetail> = {
   ],
 };
 
+// 티켓 상세 뷰 Props 타입
 type TicketDetailViewProps<T> = {
   ticketId: string;
   detail: T;
@@ -137,6 +151,7 @@ type TicketDetailViewProps<T> = {
   extraStatusCards?: StatusCardProps[];
 };
 
+// 티켓 상세 뷰 컴포넌트
 export default function TicketDetailView<
   T extends AskTicketDetail | RepairTicketDetail,
 >({
@@ -149,6 +164,7 @@ export default function TicketDetailView<
   const config = type === "ask" ? askConfig : repairConfig;
   const queryClient = useQueryClient();
 
+  // 제출 날짜 포맷팅
   const submittedAt = new Date(detail.createdTime).toLocaleString("ko-KR", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -159,6 +175,7 @@ export default function TicketDetailView<
 
   const [cancelStatus, setCancelStatus] = useAtom(config.cancelAtom);
 
+  // 취소 뮤테이션
   const cancelMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch(
@@ -171,6 +188,7 @@ export default function TicketDetailView<
       return data;
     },
     onSuccess: () => {
+      // 캐시 업데이트
       queryClient.setQueryData<T>([config.queryKey, ticketId], (prev) =>
         prev ? { ...prev, archived: true } : prev,
       );
@@ -186,6 +204,7 @@ export default function TicketDetailView<
     onMutate: () => setCancelStatus({ state: "pending" }),
   });
 
+  // 에러 상태 표시
   if (isError) {
     return (
       <div className="text-body text-core-status-negative">
@@ -208,15 +227,18 @@ export default function TicketDetailView<
         <span className="text-core-accent">.</span>
       </span>
 
+      {/* 링크 복사 컴포넌트 */}
       <CopyLink />
 
       <div className="flex w-full flex-col items-center gap-spacing-500">
+        {/* 기본 상태 카드들 */}
         <div className="flex w-full max-w-[768px] flex-wrap gap-spacing-500">
           {statusCards.map((card) => (
             <StatusCard key={card.label} {...card} />
           ))}
         </div>
 
+        {/* 추가 상태 카드들 (수리 티켓용) */}
         {extraStatusCards && extraStatusCards.length > 0 && (
           <div className="flex w-full max-w-[768px] flex-wrap gap-spacing-500">
             {extraStatusCards.map((card) => (
@@ -225,6 +247,7 @@ export default function TicketDetailView<
           </div>
         )}
 
+        {/* 상세 정보 섹션 */}
         <div className="flex w-full max-w-[768px] flex-col gap-spacing-300 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500">
           <div className="flex flex-col divide-y divide-line-divider">
             {detailRows.map((row) => (
@@ -233,6 +256,7 @@ export default function TicketDetailView<
           </div>
         </div>
 
+        {/* 취소 버튼 영역 */}
         {(canCancel || isArchived) && (
           <>
             <button
@@ -248,6 +272,7 @@ export default function TicketDetailView<
                   : config.cancelButtonText}
             </button>
 
+            {/* 취소 에러 메시지 */}
             {cancelStatus.state === "error" && cancelStatus.message && (
               <span className="text-core-status-negative text-label">
                 {cancelStatus.message}
@@ -260,6 +285,7 @@ export default function TicketDetailView<
   );
 }
 
+// 문의 티켓 상세 뷰 컴포넌트
 export function AskTicketDetailView({
   ticketId,
   detail,
@@ -279,6 +305,7 @@ export function AskTicketDetailView({
   );
 }
 
+// 수리 티켓 상세 뷰 컴포넌트
 export function RepairTicketDetailView({
   ticketId,
   detail,
@@ -288,6 +315,7 @@ export function RepairTicketDetailView({
   detail: RepairTicketDetail;
   isError?: boolean;
 }) {
+  // 수리 일정 포맷팅
   const scheduledAt = detail.schedule
     ? new Date(detail.schedule).toLocaleString("ko-KR", {
         dateStyle: "medium",
@@ -295,6 +323,7 @@ export function RepairTicketDetailView({
       })
     : undefined;
 
+  // 추가 상태 카드 (수리 전용)
   const extraStatusCards = [
     { label: "과실 여부", value: detail.liability },
     { label: "단가", value: detail.price ? `${detail.price}원` : undefined },

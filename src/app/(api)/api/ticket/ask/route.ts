@@ -1,3 +1,8 @@
+/**
+ * 문의 티켓 API
+ * 문의 티켓 목록 조회 및 새 문의 등록 엔드포인트
+ */
+
 import { NextResponse } from "next/server";
 
 import {
@@ -16,6 +21,7 @@ import {
   sanitizeText,
 } from "@/utils/notion/ask";
 
+// 문의 티켓 요청 페이로드 타입
 type AskTicketPayload = {
   corporation: string;
   department?: string;
@@ -27,11 +33,17 @@ type AskTicketPayload = {
   attachments: string[];
 };
 
+/**
+ * 요청 본문을 파싱하여 페이로드 객체로 변환
+ * @param request - HTTP 요청 객체
+ * @returns 파싱된 페이로드
+ */
 const parsePayload = async (request: Request): Promise<AskTicketPayload> => {
   const body = await request.json().catch(() => {
     throw new Error("유효한 JSON 요청이 필요합니다.");
   });
 
+  // 첨부파일 배열 처리
   const attachments = Array.isArray(body?.attachments)
     ? body.attachments
         .map((item: unknown) => sanitizeText(item))
@@ -50,6 +62,11 @@ const parsePayload = async (request: Request): Promise<AskTicketPayload> => {
   };
 };
 
+/**
+ * GET /api/ticket/ask
+ * 문의 티켓 데이터베이스 정보 조회
+ * @returns 데이터베이스 정보
+ */
 export async function GET() {
   try {
     const data = await fetchAskDatabase();
@@ -63,7 +80,14 @@ export async function GET() {
   }
 }
 
+/**
+ * POST /api/ticket/ask
+ * 새 문의 티켓 생성
+ * @param request - 문의 내용이 포함된 요청
+ * @returns 생성된 티켓 ID 및 성공 여부
+ */
 export async function POST(request: Request) {
+  // 환경 변수 확인
   if (!ASK_TICKETS_DATABASE_ID) {
     return NextResponse.json(
       { error: "ASK_TICKETS_DATABASE_ID is not configured." },
@@ -74,6 +98,7 @@ export async function POST(request: Request) {
   try {
     const payload = await parsePayload(request);
 
+    // 필수 필드 검증
     if (
       !isNonEmpty(payload.corporation) ||
       !isNonEmpty(payload.inquiryType) ||
@@ -87,6 +112,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // 선택 옵션 로드 및 검증
     const options = await loadAskSelectOptions();
     const corporation = ensureOptionValue(
       payload.corporation,
@@ -104,6 +130,7 @@ export async function POST(request: Request) {
       "긴급도",
     );
 
+    // Notion 페이지 속성 구성
     const properties: Record<string, unknown> = {
       [ASK_FIELD_NAMES.title]: buildTitleProperty(
         clampText(payload.detail) || `${payload.requester}님의 문의`,
@@ -116,10 +143,12 @@ export async function POST(request: Request) {
       [ASK_FIELD_NAMES.department]: buildRichTextProperty(payload.department),
     };
 
+    // 빈 값 제거
     const filteredProperties = Object.fromEntries(
       Object.entries(properties).filter(([, value]) => Boolean(value)),
     );
 
+    // Notion API로 페이지 생성
     const response = await fetch(NOTION_PAGES_ENDPOINT, {
       method: "POST",
       headers: notionHeaders,
@@ -132,6 +161,7 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
+    // Notion API 에러 처리
     if (!response.ok) {
       const message =
         typeof data?.message === "string"
@@ -146,6 +176,7 @@ export async function POST(request: Request) {
       error instanceof Error
         ? error.message
         : "문의 등록 중 오류가 발생했습니다.";
+    // 클라이언트 에러 판별
     const isClientError =
       error instanceof Error &&
       /값이|필수|JSON|입력해주세요/.test(error.message);

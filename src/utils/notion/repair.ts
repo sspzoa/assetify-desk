@@ -29,9 +29,11 @@ export {
   sanitizeText,
 } from "@/utils/notion/helpers";
 
+// 수리 티켓 데이터베이스 ID
 export const REPAIR_TICKETS_DATABASE_ID =
   process.env.REPAIR_TICKETS_DATABASE_ID;
 
+// 수리 티켓 필드명 매핑
 const FIELD_NAMES = {
   title: "고장증상",
   corporation: "법인",
@@ -55,12 +57,14 @@ const FIELD_NAMES = {
 
 export const REPAIR_FIELD_NAMES = FIELD_NAMES;
 
+// 수리 선택 옵션 타입
 export type RepairSelectOptions = {
-  corporations: string[];
-  urgencies: string[];
-  issueTypes: string[];
+  corporations: string[]; // 법인 목록
+  urgencies: string[]; // 긴급도 목록
+  issueTypes: string[]; // 문제 유형 목록
 };
 
+// 수리 데이터베이스 정보 조회
 export async function fetchRepairDatabase() {
   if (!REPAIR_TICKETS_DATABASE_ID) {
     throw new Error("REPAIR_TICKETS_DATABASE_ID is not configured");
@@ -68,10 +72,12 @@ export async function fetchRepairDatabase() {
   return fetchNotionDatabase(REPAIR_TICKETS_DATABASE_ID);
 }
 
+// 수리 폼 선택 옵션 로드
 export async function loadRepairSelectOptions(): Promise<RepairSelectOptions> {
   const database = await fetchRepairDatabase();
   const properties = database.properties ?? {};
 
+  // 다중 선택 옵션 추출
   const extractMultiSelectOptions = (property?: NotionSelectProperty) => {
     if (!property?.multi_select?.options) return [];
     return property.multi_select.options
@@ -86,6 +92,7 @@ export async function loadRepairSelectOptions(): Promise<RepairSelectOptions> {
   };
 }
 
+// 수리 티켓 상세 정보 조회
 export async function fetchRepairTicketDetail(
   ticketId: string,
 ): Promise<RepairTicketDetail> {
@@ -94,6 +101,7 @@ export async function fetchRepairTicketDetail(
     | Record<string, NotionPropertyValue>
     | undefined;
 
+  // 필드명으로 속성 가져오기
   const getProp = (field: keyof typeof FIELD_NAMES) =>
     properties?.[FIELD_NAMES[field]];
 
@@ -123,6 +131,7 @@ export async function fetchRepairTicketDetail(
   };
 }
 
+// 수리 티켓 삭제 (보관 처리)
 export async function deleteRepairTicket(ticketId: string) {
   await archiveNotionPage(ticketId, "수리 요청 삭제에 실패했습니다.");
 }

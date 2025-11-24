@@ -8,6 +8,7 @@ import type {
   RepairFormState,
 } from "@/types/ticket";
 
+// 문의 폼 초기 상태
 export const initialAskFormState: AskFormState = {
   corporation: "",
   department: "",
@@ -19,6 +20,7 @@ export const initialAskFormState: AskFormState = {
   attachments: [],
 };
 
+// 수리 폼 초기 상태
 export const initialRepairFormState: RepairFormState = {
   corporation: "",
   department: "",
@@ -32,32 +34,42 @@ export const initialRepairFormState: RepairFormState = {
   consent: false,
 };
 
+// 문의 폼 옵션 초기값
 export const initialAskFormOptions: AskFormOptions = {
   corporations: [],
   inquiryTypes: [],
   urgencies: [],
 };
 
+// 수리 폼 옵션 초기값
 export const initialRepairFormOptions: RepairFormOptions = {
   corporations: [],
   urgencies: [],
   issueTypes: [],
 };
 
+// 문의 폼 상태 아톰
 export const askFormStateAtom = atom<AskFormState>(initialAskFormState);
+// 문의 폼 결과 아톰
 export const askFormResultAtom = atom<FormResult>(null);
 
+// 수리 폼 상태 아톰
 export const repairFormStateAtom = atom<RepairFormState>(
   initialRepairFormState,
 );
+// 수리 폼 결과 아톰
 export const repairFormResultAtom = atom<FormResult>(null);
 
+// 링크 복사 상태 아톰
 export const copyStatusAtom = atom<"idle" | "copied">("idle");
 
+// 취소 상태 타입 정의
 export type CancelStatus =
-  | { state: "idle" }
-  | { state: "pending" }
-  | { state: "error"; message: string };
+  | { state: "idle" } // 대기 상태
+  | { state: "pending" } // 처리 중
+  | { state: "error"; message: string }; // 에러 발생
 
+// 문의 티켓 취소 상태 아톰
 export const askCancelStatusAtom = atom<CancelStatus>({ state: "idle" });
+// 수리 티켓 취소 상태 아톰
 export const repairCancelStatusAtom = atom<CancelStatus>({ state: "idle" });

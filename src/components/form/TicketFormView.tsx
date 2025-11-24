@@ -25,11 +25,13 @@ import {
 import { initialAskFormOptions, initialRepairFormOptions } from "@/store/form";
 import type { AskFormOptions, RepairFormOptions } from "@/types/ticket";
 
+// 문의 유형별 설명
 const inquiryTypeDescriptions: Record<string, string> = {
-  "PC/OA": "일반 하드웨어/ 소프트웨어 관련 문의",
+  "PC/OA": "일반 하드웨어/소프트웨어 관련 문의",
   "인프라/보안시스템": "베어독/보안프로그램 관련 문의",
 };
 
+// 선택 옵션 타입
 type SelectOption = {
   label: string;
   value: string;
@@ -37,6 +39,7 @@ type SelectOption = {
   description?: string;
 };
 
+// 선택 옵션 목록 생성 함수
 const buildSelectOptions = (
   items: string[],
   placeholder?: string,
@@ -47,24 +50,26 @@ const buildSelectOptions = (
     : options;
 };
 
+// 문의 폼 뷰 Props 타입
 type AskFormViewProps = {
   initialOptions?: AskFormOptions;
   initialError?: string | null;
 };
 
+// 문의 폼 뷰 컴포넌트
 export function AskFormView({
   initialOptions,
   initialError,
 }: AskFormViewProps) {
   const router = useRouter();
-  const [fileInputKey, setFileInputKey] = useState(0);
+  const [fileInputKey, setFileInputKey] = useState(0); // 파일 입력 초기화용 키
   const { formState, updateField } = useAskFormState();
   const { result } = useAskFormResult();
   const optionsQuery = useAskFormOptions(initialOptions);
   const submitMutation = useSubmitAskForm({
     onSuccess: (data) => {
-      setFileInputKey((prev) => prev + 1);
-      router.push(`/ticket/ask/${data.id}`);
+      setFileInputKey((prev) => prev + 1); // 파일 입력 초기화
+      router.push(`/ticket/ask/${data.id}`); // 상세 페이지로 이동
     },
   });
 
@@ -76,6 +81,7 @@ export function AskFormView({
       ? optionsQuery.error.message
       : (initialError ?? null);
 
+  // 선택 옵션들 메모이제이션
   const corporationOptions = useMemo(
     () => buildSelectOptions(options.corporations, "선택해 주세요"),
     [options.corporations],
@@ -94,6 +100,7 @@ export function AskFormView({
     [options.urgencies],
   );
 
+  // 폼 제출 핸들러
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!hasOptions || submitMutation.isPending) return;
@@ -106,6 +113,7 @@ export function AskFormView({
         Ask Form<span className="text-core-accent">.</span>
       </span>
 
+      {/* 옵션 로드 에러 메시지 */}
       {optionsError && (
         <span className="text-core-status-negative text-label">
           {optionsError} 다시 시도해주세요.
@@ -116,6 +124,7 @@ export function AskFormView({
         onSubmit={handleSubmit}
         className="flex w-full flex-col items-center gap-spacing-500"
       >
+        {/* 법인 선택 */}
         <FormField title="법인" required>
           <SelectInput
             id="corporation"
@@ -128,6 +137,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 부서 입력 */}
         <FormField title="부서">
           <TextInput
             id="department"
@@ -138,6 +148,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 문의자 성함 입력 */}
         <FormField title="문의자 성함" required>
           <TextInput
             id="requester"
@@ -149,6 +160,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 자산 번호 입력 (자동 완성 지원) */}
         <FormField
           title="자산 번호"
           description="사용중인 기기에 붙어있는 자산 번호를 적어주세요."
@@ -163,6 +175,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 문의 유형 선택 */}
         <FormField
           title="문의 유형"
           required
@@ -178,6 +191,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 문의 내용 입력 */}
         <FormField
           title="문의 내용"
           description="필요한 도움이나 요청 사항을 구체적으로 입력해 주세요."
@@ -193,6 +207,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 참고 자료 업로드 */}
         <FormField
           title="참고 자료"
           description="각종 첨부 파일을 올릴 수 있습니다."
@@ -217,6 +232,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 긴급도 선택 */}
         <FormField title="긴급도" required>
           <RadioSelect
             name="urgency"
@@ -228,6 +244,7 @@ export function AskFormView({
           />
         </FormField>
 
+        {/* 제출 버튼 */}
         <button
           type="submit"
           disabled={submitMutation.isPending || !hasOptions}
@@ -236,6 +253,7 @@ export function AskFormView({
           {submitMutation.isPending ? "제출 중..." : "제출하기"}
         </button>
 
+        {/* 제출 에러 메시지 */}
         {result?.error && (
           <span
             className="text-core-status-negative text-label"
@@ -249,24 +267,26 @@ export function AskFormView({
   );
 }
 
+// 수리 폼 뷰 Props 타입
 type RepairFormViewProps = {
   initialOptions?: RepairFormOptions;
   initialError?: string | null;
 };
 
+// 수리 폼 뷰 컴포넌트
 export function RepairFormView({
   initialOptions,
   initialError,
 }: RepairFormViewProps) {
   const router = useRouter();
-  const [fileInputKey, setFileInputKey] = useState(0);
+  const [fileInputKey, setFileInputKey] = useState(0); // 파일 입력 초기화용 키
   const { formState, updateField } = useRepairFormState();
   const { result } = useRepairFormResult();
   const optionsQuery = useRepairFormOptions(initialOptions);
   const submitMutation = useSubmitRepairForm({
     onSuccess: (data) => {
-      setFileInputKey((prev) => prev + 1);
-      router.push(`/ticket/repair/${data.id}`);
+      setFileInputKey((prev) => prev + 1); // 파일 입력 초기화
+      router.push(`/ticket/repair/${data.id}`); // 상세 페이지로 이동
     },
   });
 
@@ -278,6 +298,7 @@ export function RepairFormView({
       ? optionsQuery.error.message
       : (initialError ?? null);
 
+  // 선택 옵션들 메모이제이션
   const corporationOptions = useMemo(
     () => buildSelectOptions(options.corporations, "선택해 주세요"),
     [options.corporations],
@@ -291,6 +312,7 @@ export function RepairFormView({
     [options.urgencies],
   );
 
+  // 폼 제출 핸들러
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!hasOptions || submitMutation.isPending || !formState.consent) return;
@@ -303,6 +325,7 @@ export function RepairFormView({
         Repair Form<span className="text-core-accent">.</span>
       </span>
 
+      {/* 옵션 로드 에러 메시지 */}
       {optionsError && (
         <span className="text-core-status-warning text-label">
           {optionsError} 다시 시도해주세요.
@@ -313,6 +336,7 @@ export function RepairFormView({
         onSubmit={handleSubmit}
         className="flex w-full flex-col items-center gap-spacing-500"
       >
+        {/* 법인 선택 */}
         <FormField title="법인" required>
           <SelectInput
             id="repair-corporation"
@@ -325,6 +349,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 부서 입력 */}
         <FormField title="부서">
           <TextInput
             id="repair-department"
@@ -335,6 +360,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 문의자 성함 입력 */}
         <FormField title="문의자 성함" required>
           <TextInput
             id="repair-requester"
@@ -346,6 +372,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 실제 근무 위치 입력 */}
         <FormField
           title="실제 근무 위치"
           description={`ex. 용인연구소 → 경기 용인시 처인구 포곡읍 두계로 72
@@ -362,6 +389,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 자산 번호 입력 (자동 완성 지원) */}
         <FormField
           title="자산 번호"
           description="사용중인 기기에 붙어있는 자산 번호를 적어주세요."
@@ -376,6 +404,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 고장 내역 선택 */}
         <FormField
           title="고장 내역"
           description="해당하는 고장 유형을 선택해 주세요."
@@ -390,6 +419,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 고장 증상 입력 */}
         <FormField
           title="고장 증상"
           description="현재 고장 증상을 구체적으로 입력해 주세요."
@@ -405,6 +435,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 참고 자료 업로드 */}
         <FormField
           title="참고 자료"
           description="각종 첨부 파일을 올릴 수 있습니다."
@@ -429,6 +460,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 긴급도 선택 */}
         <FormField title="긴급도" required>
           <RadioSelect
             name="repair-urgency"
@@ -440,6 +472,7 @@ export function RepairFormView({
           />
         </FormField>
 
+        {/* 수리 진행 동의 체크박스 */}
         <FormField
           title="수리 진행 동의"
           description={`수리 진행 시 수리 비용이 청구되며
@@ -459,6 +492,7 @@ export function RepairFormView({
           </label>
         </FormField>
 
+        {/* 제출 버튼 */}
         <button
           type="submit"
           disabled={
@@ -469,6 +503,7 @@ export function RepairFormView({
           {submitMutation.isPending ? "제출 중..." : "제출하기"}
         </button>
 
+        {/* 제출 에러 메시지 */}
         {result?.error && (
           <span
             className="text-core-status-negative text-label"

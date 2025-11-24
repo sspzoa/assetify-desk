@@ -1,3 +1,8 @@
+/**
+ * 수리 요청 티켓 API
+ * 수리 요청 목록 조회 및 새 수리 요청 등록 엔드포인트
+ */
+
 import { NextResponse } from "next/server";
 
 import {
@@ -20,6 +25,7 @@ import {
   REPAIR_TICKETS_DATABASE_ID,
 } from "@/utils/notion/repair";
 
+// 수리 요청 티켓 페이로드 타입
 type RepairTicketPayload = {
   corporation: string;
   department?: string;
@@ -33,11 +39,17 @@ type RepairTicketPayload = {
   consent: boolean;
 };
 
+/**
+ * 요청 본문을 파싱하여 페이로드 객체로 변환
+ * @param request - HTTP 요청 객체
+ * @returns 파싱된 페이로드
+ */
 const parsePayload = async (request: Request): Promise<RepairTicketPayload> => {
   const body = await request.json().catch(() => {
     throw new Error("유효한 JSON 요청이 필요합니다.");
   });
 
+  // 첨부파일 배열 처리
   const attachments = Array.isArray(body?.attachments)
     ? body.attachments
         .map((item: unknown) => sanitizeText(item))
@@ -58,6 +70,11 @@ const parsePayload = async (request: Request): Promise<RepairTicketPayload> => {
   };
 };
 
+/**
+ * GET /api/ticket/repair
+ * 수리 요청 데이터베이스 정보 조회
+ * @returns 데이터베이스 정보
+ */
 export async function GET() {
   try {
     const data = await fetchRepairDatabase();
@@ -71,7 +88,14 @@ export async function GET() {
   }
 }
 
+/**
+ * POST /api/ticket/repair
+ * 새 수리 요청 티켓 생성
+ * @param request - 수리 요청 내용이 포함된 요청
+ * @returns 생성된 티켓 ID 및 성공 여부
+ */
 export async function POST(request: Request) {
+  // 환경 변수 확인
   if (!REPAIR_TICKETS_DATABASE_ID) {
     return NextResponse.json(
       { error: "REPAIR_TICKETS_DATABASE_ID is not configured." },
@@ -82,6 +106,7 @@ export async function POST(request: Request) {
   try {
     const payload = await parsePayload(request);
 
+    // 필수 필드 및 동의 검증
     if (
       !isNonEmpty(payload.corporation) ||
       !isNonEmpty(payload.detail) ||
@@ -95,6 +120,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // 선택 옵션 로드 및 검증
     const options = await loadRepairSelectOptions();
     const corporation = ensureOptionValue(
       payload.corporation,
@@ -106,10 +132,12 @@ export async function POST(request: Request) {
       options.urgencies,
       "긴급도",
     );
+    // 고장 내역은 선택 사항
     const issueType = payload.issueType
       ? ensureOptionValue(payload.issueType, options.issueTypes, "고장 내역")
       : undefined;
 
+    // Notion 페이지 속성 구성
     const properties: Record<string, unknown> = {
       [REPAIR_FIELD_NAMES.title]: buildTitleProperty(
         clampText(payload.detail) || `${payload.requester}님의 수리 요청`,
@@ -130,10 +158,12 @@ export async function POST(request: Request) {
       [REPAIR_FIELD_NAMES.consent]: buildCheckboxProperty(payload.consent),
     };
 
+    // 빈 값 제거
     const filteredProperties = Object.fromEntries(
       Object.entries(properties).filter(([, value]) => Boolean(value)),
     );
 
+    // Notion API로 페이지 생성
     const response = await fetch(NOTION_PAGES_ENDPOINT, {
       method: "POST",
       headers: notionHeaders,
@@ -146,6 +176,7 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
+    // Notion API 에러 처리
     if (!response.ok) {
       const message =
         typeof data?.message === "string"
@@ -160,6 +191,7 @@ export async function POST(request: Request) {
       error instanceof Error
         ? error.message
         : "수리 요청 등록 중 오류가 발생했습니다.";
+    // 클라이언트 에러 판별
     const isClientError =
       error instanceof Error &&
       /값이|필수|JSON|동의|입력해주세요/.test(error.message);

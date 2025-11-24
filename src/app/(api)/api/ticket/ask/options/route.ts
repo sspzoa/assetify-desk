@@ -1,7 +1,17 @@
+/**
+ * 문의 티켓 선택 옵션 API
+ * 문의 등록 시 필요한 선택 항목(법인, 문의 유형, 긴급도 등)을 조회하는 엔드포인트
+ */
+
 import { NextResponse } from "next/server";
 
 import { loadAskSelectOptions } from "@/utils/notion/ask";
 
+/**
+ * GET /api/ticket/ask/options
+ * 문의 티켓 등록에 필요한 선택 옵션 조회
+ * @returns 법인, 문의 유형, 긴급도 등의 선택 옵션
+ */
 export async function GET() {
   try {
     const options = await loadAskSelectOptions();

@@ -1,3 +1,8 @@
+/**
+ * 자산 검색 API
+ * 사용자 이름 또는 자산번호로 자산을 검색하는 엔드포인트
+ */
+
 import { NextResponse } from "next/server";
 
 import {
@@ -15,6 +20,7 @@ import type { NotionPropertyValue } from "@/utils/notion/types";
 
 const ASSETS_DATABASE_ID = process.env.ASSETS_DATABASE_ID;
 
+// Notion 데이터베이스 속성 이름 매핑
 const PROPERTY_NAMES = {
   user: "사용자",
   assetNumber: "자산번호",
@@ -23,7 +29,14 @@ const PROPERTY_NAMES = {
   usageStatus: "사용/재고/폐기/기타",
 };
 
+/**
+ * GET /api/assets
+ * 자산 목록을 검색
+ * @param request - name 또는 assetNumber 쿼리 파라미터 포함
+ * @returns 검색된 자산 목록
+ */
 export async function GET(request: Request) {
+  // 환경 변수 확인
   if (!ASSETS_DATABASE_ID) {
     return NextResponse.json(
       { error: "ASSETS_DATABASE_ID is not configured." },
@@ -31,19 +44,23 @@ export async function GET(request: Request) {
     );
   }
 
+  // 쿼리 파라미터 파싱
   const { searchParams } = new URL(request.url);
   const nameQuery = searchParams.get("name")?.trim() ?? "";
   const assetNumberQuery = searchParams.get("assetNumber")?.trim() ?? "";
 
+  // 최소 검색어 길이 확인
   const hasNameQuery = nameQuery.length >= ASSET_SEARCH_MIN_LENGTH;
   const hasAssetNumberQuery =
     assetNumberQuery.length >= ASSET_NUMBER_SEARCH_MIN_LENGTH;
 
+  // 검색어가 없으면 빈 배열 반환
   if (!hasNameQuery && !hasAssetNumberQuery) {
     return NextResponse.json({ assets: [] });
   }
 
   try {
+    // Notion 데이터베이스 쿼리
     const notionResponse = await fetch(
       `https://api.notion.com/v1/databases/${ASSETS_DATABASE_ID}/query`,
       {
@@ -52,6 +69,7 @@ export async function GET(request: Request) {
         headers: notionHeaders,
         body: JSON.stringify({
           page_size: 10,
+          // 자산번호 검색 우선, 없으면 사용자 이름으로 검색
           filter: hasAssetNumberQuery
             ? {
                 property: PROPERTY_NAMES.assetNumber,
@@ -67,6 +85,7 @@ export async function GET(request: Request) {
 
     const notionData = await notionResponse.json();
 
+    // Notion API 에러 처리
     if (!notionResponse.ok) {
       const message =
         typeof notionData?.message === "string"
@@ -75,6 +94,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: message }, { status: 500 });
     }
 
+    // 응답 데이터를 AssetRecord 형태로 변환
     const assets: AssetRecord[] = (notionData.results ?? [])
       .map(
         (page: {
@@ -98,6 +118,7 @@ export async function GET(request: Request) {
           };
         },
       )
+      // 자산번호가 있는 항목만 필터링
       .filter((asset: { assetNumber: string }) => asset.assetNumber);
 
     return NextResponse.json({ assets });

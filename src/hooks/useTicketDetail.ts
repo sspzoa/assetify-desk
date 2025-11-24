@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import type { AskTicketDetail, RepairTicketDetail } from "@/types/ticket";
 
+// 문의 티켓 상세 정보 조회 API 호출
 const fetchAskDetail = async (ticketId: string): Promise<AskTicketDetail> => {
   const response = await fetch(`/api/ticket/ask/${ticketId}`, {
     cache: "no-store",
@@ -14,6 +15,7 @@ const fetchAskDetail = async (ticketId: string): Promise<AskTicketDetail> => {
   return data;
 };
 
+// 수리 티켓 상세 정보 조회 API 호출
 const fetchRepairDetail = async (
   ticketId: string,
 ): Promise<RepairTicketDetail> => {
@@ -26,6 +28,7 @@ const fetchRepairDetail = async (
   return data;
 };
 
+// 문의 티켓 상세 정보 조회 훅
 export function useAskTicketDetail(
   ticketId: string,
   initialData?: AskTicketDetail,
@@ -34,11 +37,12 @@ export function useAskTicketDetail(
     queryKey: ["ask-ticket-detail", ticketId],
     queryFn: () => fetchAskDetail(ticketId),
     initialData,
-    enabled: Boolean(ticketId),
-    staleTime: 1000 * 30,
+    enabled: Boolean(ticketId), // ticketId가 있을 때만 조회
+    staleTime: 1000 * 30, // 30초간 캐시 유지
   });
 }
 
+// 수리 티켓 상세 정보 조회 훅
 export function useRepairTicketDetail(
   ticketId: string,
   initialData?: RepairTicketDetail,
@@ -47,7 +51,7 @@ export function useRepairTicketDetail(
     queryKey: ["repair-ticket-detail", ticketId],
     queryFn: () => fetchRepairDetail(ticketId),
     initialData,
-    enabled: Boolean(ticketId),
-    staleTime: 1000 * 30,
+    enabled: Boolean(ticketId), // ticketId가 있을 때만 조회
+    staleTime: 1000 * 30, // 30초간 캐시 유지
   });
 }

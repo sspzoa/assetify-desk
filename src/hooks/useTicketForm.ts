@@ -20,6 +20,7 @@ import type {
   RepairFormState,
 } from "@/types/ticket";
 
+// 문의 폼 옵션 조회 API 호출
 const fetchAskOptions = async (): Promise<AskFormOptions> => {
   const response = await fetch("/api/ticket/ask/options", {
     cache: "no-store",
@@ -34,6 +35,7 @@ const fetchAskOptions = async (): Promise<AskFormOptions> => {
   };
 };
 
+// 문의 티켓 제출 API 호출
 const submitAskTicket = async (payload: AskFormState) => {
   const response = await fetch("/api/ticket/ask", {
     method: "POST",
@@ -45,6 +47,7 @@ const submitAskTicket = async (payload: AskFormState) => {
   return data as { id: string };
 };
 
+// 문의 폼 옵션 조회 훅
 export function useAskFormOptions(initialData?: AskFormOptions) {
   return useQuery<AskFormOptions, Error>({
     queryKey: ["ask-form-options"],
@@ -53,15 +56,18 @@ export function useAskFormOptions(initialData?: AskFormOptions) {
   });
 }
 
+// 문의 폼 상태 관리 훅
 export function useAskFormState() {
   return useFormState(askFormStateAtom, initialAskFormState);
 }
 
+// 문의 폼 결과 관리 훅
 export function useAskFormResult() {
   const [result, setResult] = useAtom(askFormResultAtom);
   return { result, clearResult: () => setResult(null) };
 }
 
+// 문의 폼 제출 훅
 export function useSubmitAskForm(params?: {
   onSuccess?: (data: { id: string }) => void;
 }) {
@@ -75,6 +81,7 @@ export function useSubmitAskForm(params?: {
   });
 }
 
+// 수리 폼 옵션 조회 API 호출
 const fetchRepairOptions = async (): Promise<RepairFormOptions> => {
   const response = await fetch("/api/ticket/repair/options", {
     cache: "no-store",
@@ -89,6 +96,7 @@ const fetchRepairOptions = async (): Promise<RepairFormOptions> => {
   };
 };
 
+// 수리 티켓 제출 API 호출
 const submitRepairTicket = async (payload: RepairFormState) => {
   const response = await fetch("/api/ticket/repair", {
     method: "POST",
@@ -101,6 +109,7 @@ const submitRepairTicket = async (payload: RepairFormState) => {
   return data as { id: string };
 };
 
+// 수리 폼 옵션 조회 훅
 export function useRepairFormOptions(initialData?: RepairFormOptions) {
   return useQuery<RepairFormOptions, Error>({
     queryKey: ["repair-form-options"],
@@ -109,15 +118,18 @@ export function useRepairFormOptions(initialData?: RepairFormOptions) {
   });
 }
 
+// 수리 폼 상태 관리 훅
 export function useRepairFormState() {
   return useFormState(repairFormStateAtom, initialRepairFormState);
 }
 
+// 수리 폼 결과 관리 훅
 export function useRepairFormResult() {
   const [result, setResult] = useAtom(repairFormResultAtom);
   return { result, clearResult: () => setResult(null) };
 }
 
+// 수리 폼 제출 훅
 export function useSubmitRepairForm(params?: {
   onSuccess?: (data: { id: string }) => void;
 }) {
@@ -131,21 +143,25 @@ export function useSubmitRepairForm(params?: {
   });
 }
 
+// 폼 상태 관리 공통 훅
 function useFormState<T extends Record<string, unknown>>(
   atom: PrimitiveAtom<T>,
   initialState: T,
 ) {
   const [formState, setFormState] = useAtom(atom);
 
+  // 특정 필드 값 업데이트
   const updateField = <K extends keyof T>(field: K, value: T[K]) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
 
+  // 폼 상태 초기화
   const reset = () => setFormState(initialState);
 
   return { formState, updateField, reset };
 }
 
+// 폼 제출 공통 훅
 function useSubmitForm<T>({
   mutationFn,
   stateAtom,
@@ -166,13 +182,14 @@ function useSubmitForm<T>({
 
   return useMutation({
     mutationFn,
-    onMutate: () => setResult(null),
+    onMutate: () => setResult(null), // 제출 시작 시 결과 초기화
     onSuccess: (data) => {
-      setResult({ id: data.id });
-      setFormState(initialState);
+      setResult({ id: data.id }); // 성공 결과 저장
+      setFormState(initialState); // 폼 상태 초기화
       onSuccess?.(data);
     },
     onError: (error: unknown) => {
+      // 에러 메시지 저장
       const message = error instanceof Error ? error.message : errorMessage;
       setResult({ error: message });
     },

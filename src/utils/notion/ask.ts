@@ -24,8 +24,10 @@ export {
   sanitizeText,
 } from "@/utils/notion/helpers";
 
+// 문의 티켓 데이터베이스 ID
 export const ASK_TICKETS_DATABASE_ID = process.env.ASK_TICKETS_DATABASE_ID;
 
+// 문의 티켓 필드명 매핑
 const FIELD_NAMES = {
   corporation: "법인",
   inquiryType: "문의유형",
@@ -42,12 +44,14 @@ const FIELD_NAMES = {
 
 export const ASK_FIELD_NAMES = FIELD_NAMES;
 
+// 문의 선택 옵션 타입
 export type AskSelectOptions = {
-  corporations: string[];
-  inquiryTypes: string[];
-  urgencies: string[];
+  corporations: string[]; // 법인 목록
+  inquiryTypes: string[]; // 문의 유형 목록
+  urgencies: string[]; // 긴급도 목록
 };
 
+// 문의 데이터베이스 정보 조회
 export async function fetchAskDatabase() {
   if (!ASK_TICKETS_DATABASE_ID) {
     throw new Error("ASK_TICKETS_DATABASE_ID is not configured");
@@ -55,6 +59,7 @@ export async function fetchAskDatabase() {
   return fetchNotionDatabase(ASK_TICKETS_DATABASE_ID);
 }
 
+// 문의 폼 선택 옵션 로드
 export async function loadAskSelectOptions(): Promise<AskSelectOptions> {
   const database = await fetchAskDatabase();
   const properties = database.properties ?? {};
@@ -65,6 +70,7 @@ export async function loadAskSelectOptions(): Promise<AskSelectOptions> {
   };
 }
 
+// 문의 티켓 상세 정보 조회
 export async function fetchAskTicketDetail(
   ticketId: string,
 ): Promise<AskTicketDetail> {
@@ -73,6 +79,7 @@ export async function fetchAskTicketDetail(
     | Record<string, NotionPropertyValue>
     | undefined;
 
+  // 필드명으로 속성 가져오기
   const getProp = (field: keyof typeof FIELD_NAMES) =>
     properties?.[FIELD_NAMES[field]];
 
@@ -95,6 +102,7 @@ export async function fetchAskTicketDetail(
   };
 }
 
+// 문의 티켓 삭제 (보관 처리)
 export async function deleteAskTicket(ticketId: string) {
   await archiveNotionPage(ticketId, "문의 삭제에 실패했습니다.");
 }
