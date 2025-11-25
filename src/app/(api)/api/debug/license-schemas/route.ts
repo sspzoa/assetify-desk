@@ -60,16 +60,11 @@ export async function GET() {
           name: licenseName,
           schema: {
             properties: Object.entries(data.properties || {}).reduce(
-              (
-                acc,
-                [key, value]: [
-                  string,
-                  { type: string; id: string; [key: string]: unknown },
-                ],
-              ) => {
+              (acc, [key, value]) => {
+                const typedValue = value as { type: string; id: string; [key: string]: unknown };
                 acc[key] = {
-                  type: value.type,
-                  id: value.id,
+                  type: typedValue.type,
+                  id: typedValue.id,
                 };
                 return acc;
               },
