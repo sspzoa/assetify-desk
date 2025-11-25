@@ -643,53 +643,50 @@ export function FindLicenseFormView({
 
         {/* 검색 결과 */}
         {searchResults && searchResults.length > 0 && (
-          <div className="mt-spacing-500 w-full max-w-[768px] space-y-spacing-400">
-            <h3 className="font-semibold text-heading">
-              검색 결과 (
-              {searchResults.reduce((acc, r) => acc + r.results.length, 0)}건)
-            </h3>
-            {searchResults.map((result) => (
-              <div
-                key={result.licenseName}
-                className="rounded-radius-500 border border-line-outline bg-components-fill-standard-primary p-spacing-500"
-              >
-                <h4 className="mb-spacing-300 font-semibold text-body">
-                  {result.licenseName.replace(/_/g, " ")} (
-                  {result.results.length}건)
-                </h4>
-                <div className="space-y-spacing-300">
-                  {result.results.map((item) => (
-                    <div
-                      key={item.id}
-                      className="rounded-radius-400 border border-line-outline bg-surface-primary p-spacing-300"
-                    >
-                      {Object.entries(item.properties).map(([key, value]) => (
-                        <div
-                          key={key}
-                          className="flex gap-spacing-200 text-body"
-                        >
-                          <span className="min-w-[100px] font-medium text-content-standard-secondary">
-                            {key}:
-                          </span>
-                          <span className="text-content-standard-primary">
-                            {value || "-"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+          <FormField
+            title={`검색 결과 (${searchResults.reduce((acc, r) => acc + r.results.length, 0)}건)`}
+          >
+            <div className="w-full space-y-spacing-400">
+              {searchResults.map((result) => (
+                <div key={result.licenseName} className="space-y-spacing-300">
+                  <div className="font-semibold text-body text-content-standard-primary">
+                    {result.licenseName.replace(/_/g, " ")} (
+                    {result.results.length}건)
+                  </div>
+                  <div className="space-y-spacing-300">
+                    {result.results.map((item) => (
+                      <div
+                        key={item.id}
+                        className="rounded-radius-500 border border-line-outline bg-components-fill-standard-primary p-spacing-400"
+                      >
+                        {Object.entries(item.properties).map(([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex gap-spacing-300 py-spacing-200 text-body"
+                          >
+                            <span className="min-w-[120px] font-medium text-content-standard-secondary">
+                              {key}
+                            </span>
+                            <span className="text-content-standard-primary">
+                              {value || "-"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </FormField>
         )}
 
         {searchResults && searchResults.length === 0 && (
-          <div className="mt-spacing-500 w-full max-w-[768px] rounded-radius-500 bg-surface-secondary p-spacing-400">
-            <p className="text-center text-body text-content-standard-secondary">
+          <FormField title="검색 결과">
+            <div className="rounded-radius-500 border border-line-outline bg-surface-secondary p-spacing-500 text-center text-body text-content-standard-secondary">
               검색 결과가 없습니다.
-            </p>
-          </div>
+            </div>
+          </FormField>
         )}
       </form>
     </div>
