@@ -88,6 +88,15 @@ export default function Home() {
             소프트웨어 라이센스 키를 찾고 있는 경우
           </span>
         </Link>
+
+        {/* Assetify 링크 */}
+        <Link
+          href="https://assetify.sspzoa.io"
+          className="flex cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
+        >
+          <span className="font-semibold text-heading">Assetify</span>
+          <span className="text-label">관리자 전용</span>
+        </Link>
       </div>
 
       {/* 하단 상태 표시 섹션 */}
