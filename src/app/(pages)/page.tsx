@@ -57,11 +57,11 @@ export default function Home() {
       </div>
 
       {/* 주요 기능 링크 섹션 */}
-      <div className="mb-spacing-1000 flex w-full max-w-[768px] flex-col items-center justify-center gap-spacing-500 p-spacing-700 md:flex-row">
+      <div className="mb-spacing-1000 grid w-full max-w-[768px] grid-cols-1 gap-spacing-500 p-spacing-700 md:grid-cols-2">
         {/* 문의하기 링크 */}
         <Link
           href="/inquiry-form"
-          className="flex w-full cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
+          className="flex cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
         >
           <span className="font-semibold text-heading">문의하기</span>
           <span className="text-label">자산 관련 문의 사항이 있는 경우</span>
@@ -70,11 +70,22 @@ export default function Home() {
         {/* 수리 요청하기 링크 */}
         <Link
           href="/repair-form"
-          className="flex w-full cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
+          className="flex cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
         >
           <span className="font-semibold text-heading">수리 요청하기</span>
           <span className="text-label">
             하드웨어 고장으로 수리가 필요한 경우
+          </span>
+        </Link>
+
+        {/* 라이센스 키 찾기 링크 */}
+        <Link
+          href="/find-license"
+          className="flex cursor-pointer flex-col items-start justify-center gap-spacing-100 rounded-radius-700 border border-line-outline bg-components-fill-standard-primary p-spacing-500 text-content-standard-primary-primary duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
+        >
+          <span className="font-semibold text-heading">라이센스 키 찾기</span>
+          <span className="text-label">
+            소프트웨어 라이센스 키를 찾고 있는 경우
           </span>
         </Link>
       </div>

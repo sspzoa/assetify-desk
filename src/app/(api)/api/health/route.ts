@@ -6,8 +6,7 @@
 import { NextResponse } from "next/server";
 
 // Notion 데이터베이스 ID 환경 변수
-const INQUIRY_TICKETS_DATABASE_ID =
-  process.env.INQUIRY_TICKETS_DATABASE_ID;
+const INQUIRY_TICKETS_DATABASE_ID = process.env.INQUIRY_TICKETS_DATABASE_ID;
 const ASSETS_DATABASE_ID = process.env.ASSETS_DATABASE_ID;
 const REPAIR_TICKETS_DATABASE_ID = process.env.REPAIR_TICKETS_DATABASE_ID;
 

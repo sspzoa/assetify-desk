@@ -6,8 +6,8 @@ import { useAtom } from "jotai";
 
 import { CANCELABLE_STATUS } from "@/constants";
 import {
-  inquiryCancelStatusAtom,
   type CancelStatus,
+  inquiryCancelStatusAtom,
   repairCancelStatusAtom,
 } from "@/store/form";
 import type {

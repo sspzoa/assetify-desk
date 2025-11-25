@@ -24,9 +24,7 @@ export default async function InquiryTicketDetailPage(props: {
   try {
     // Notion에서 티켓 상세 정보 조회
     const ticket = await fetchInquiryTicketDetail(ticketId);
-    return (
-      <InquiryTicketDetailView ticketId={ticketId} detail={ticket} />
-    );
+    return <InquiryTicketDetailView ticketId={ticketId} detail={ticket} />;
   } catch (error) {
     // 티켓 조회 실패 시 404 페이지로 이동
     console.error("Failed to load inquiry ticket", error);

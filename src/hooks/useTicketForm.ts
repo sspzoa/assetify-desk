@@ -5,6 +5,9 @@ import type { PrimitiveAtom } from "jotai";
 import { useAtom, useSetAtom } from "jotai";
 
 import {
+  findLicenseFormResultAtom,
+  findLicenseFormStateAtom,
+  initialFindLicenseFormState,
   initialInquiryFormState,
   initialRepairFormState,
   inquiryFormResultAtom,
@@ -13,12 +16,15 @@ import {
   repairFormStateAtom,
 } from "@/store/form";
 import type {
+  FindLicenseFormOptions,
+  FindLicenseFormState,
   FormResult,
   InquiryFormOptions,
   InquiryFormState,
   RepairFormOptions,
   RepairFormState,
 } from "@/types/ticket";
+import type { ParsedLicenseResult } from "@/utils/notion/license-parser";
 
 // 문의 폼 옵션 조회 API 호출
 const fetchInquiryOptions = async (): Promise<InquiryFormOptions> => {
@@ -159,6 +165,94 @@ function useFormState<T extends Record<string, unknown>>(
   const reset = () => setFormState(initialState);
 
   return { formState, updateField, reset };
+}
+
+// 라이센스 찾기 폼 옵션 조회 API 호출
+const fetchFindLicenseOptions = async (): Promise<FindLicenseFormOptions> => {
+  const response = await fetch("/api/ticket/find-license/options", {
+    cache: "no-store",
+  });
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(data?.error ?? "선택지를 불러오지 못했습니다.");
+  return {
+    corporations: data.corporations ?? [],
+  };
+};
+
+// 라이센스 찾기 제출 API 호출
+const submitFindLicenseRequest = async (payload: FindLicenseFormState) => {
+  const response = await fetch("/api/ticket/find-license", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(data?.error ?? "라이센스 찾기 요청에 실패했습니다.");
+  return data as {
+    success: boolean;
+    searchResults: Array<{
+      licenseName: string;
+      results: ParsedLicenseResult[];
+    }>;
+    totalFound: number;
+  };
+};
+
+// 라이센스 찾기 폼 옵션 조회 훅
+export function useFindLicenseFormOptions(
+  initialData?: FindLicenseFormOptions,
+) {
+  return useQuery<FindLicenseFormOptions, Error>({
+    queryKey: ["find-license-form-options"],
+    queryFn: fetchFindLicenseOptions,
+    initialData,
+  });
+}
+
+// 라이센스 찾기 폼 상태 관리 훅
+export function useFindLicenseFormState() {
+  return useFormState(findLicenseFormStateAtom, initialFindLicenseFormState);
+}
+
+// 라이센스 찾기 폼 결과 관리 훅
+export function useFindLicenseFormResult() {
+  const [result, setResult] = useAtom(findLicenseFormResultAtom);
+  return { result, clearResult: () => setResult(null) };
+}
+
+// 라이센스 찾기 폼 제출 훅
+export function useSubmitFindLicenseForm(params?: {
+  onSuccess?: (data: {
+    success: boolean;
+    searchResults: Array<{
+      licenseName: string;
+      results: ParsedLicenseResult[];
+    }>;
+    totalFound: number;
+  }) => void;
+}) {
+  const setFormState = useSetAtom(findLicenseFormStateAtom);
+  const setResult = useSetAtom(findLicenseFormResultAtom);
+
+  return useMutation({
+    mutationFn: submitFindLicenseRequest,
+    onMutate: () => setResult(null),
+    onSuccess: (data) => {
+      // 검색 결과를 result atom에 저장
+      setResult({ id: "success" });
+      setFormState(initialFindLicenseFormState);
+      params?.onSuccess?.(data);
+    },
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "라이센스 찾기 요청에 실패했습니다.";
+      setResult({ error: message });
+    },
+  });
 }
 
 // 폼 제출 공통 훅

@@ -1,6 +1,8 @@
 import { atom } from "jotai";
 
 import type {
+  FindLicenseFormOptions,
+  FindLicenseFormState,
   FormResult,
   InquiryFormOptions,
   InquiryFormState,
@@ -48,6 +50,17 @@ export const initialRepairFormOptions: RepairFormOptions = {
   issueTypes: [],
 };
 
+// 라이센스 찾기 폼 초기 상태
+export const initialFindLicenseFormState: FindLicenseFormState = {
+  corporation: "",
+  requester: "",
+};
+
+// 라이센스 찾기 폼 옵션 초기값
+export const initialFindLicenseFormOptions: FindLicenseFormOptions = {
+  corporations: [],
+};
+
 // 문의 폼 상태 아톰
 export const inquiryFormStateAtom = atom<InquiryFormState>(
   initialInquiryFormState,
@@ -61,6 +74,13 @@ export const repairFormStateAtom = atom<RepairFormState>(
 );
 // 수리 폼 결과 아톰
 export const repairFormResultAtom = atom<FormResult>(null);
+
+// 라이센스 찾기 폼 상태 아톰
+export const findLicenseFormStateAtom = atom<FindLicenseFormState>(
+  initialFindLicenseFormState,
+);
+// 라이센스 찾기 폼 결과 아톰
+export const findLicenseFormResultAtom = atom<FormResult>(null);
 
 // 링크 복사 상태 아톰
 export const copyStatusAtom = atom<"idle" | "copied">("idle");

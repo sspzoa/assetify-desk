@@ -6,14 +6,14 @@
 import { NextResponse } from "next/server";
 
 import {
-  INQUIRY_FIELD_NAMES,
-  INQUIRY_TICKETS_DATABASE_ID,
   buildRichTextProperty,
   buildSelectProperty,
   buildTitleProperty,
   clampText,
   ensureOptionValue,
   fetchInquiryDatabase,
+  INQUIRY_FIELD_NAMES,
+  INQUIRY_TICKETS_DATABASE_ID,
   isNonEmpty,
   loadInquirySelectOptions,
   NOTION_PAGES_ENDPOINT,
@@ -143,9 +143,7 @@ export async function POST(request: Request) {
       [INQUIRY_FIELD_NAMES.assetNumber]: buildRichTextProperty(
         payload.assetNumber,
       ),
-      [INQUIRY_FIELD_NAMES.requester]: buildRichTextProperty(
-        payload.requester,
-      ),
+      [INQUIRY_FIELD_NAMES.requester]: buildRichTextProperty(payload.requester),
       [INQUIRY_FIELD_NAMES.department]: buildRichTextProperty(
         payload.department,
       ),

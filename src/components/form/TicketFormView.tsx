@@ -13,20 +13,30 @@ import {
   TextInput,
 } from "@/components/form/form-fields";
 import {
+  useFindLicenseFormOptions,
+  useFindLicenseFormResult,
+  useFindLicenseFormState,
   useInquiryFormOptions,
   useInquiryFormResult,
   useInquiryFormState,
   useRepairFormOptions,
   useRepairFormResult,
   useRepairFormState,
+  useSubmitFindLicenseForm,
   useSubmitInquiryForm,
   useSubmitRepairForm,
 } from "@/hooks/useTicketForm";
 import {
+  initialFindLicenseFormOptions,
   initialInquiryFormOptions,
   initialRepairFormOptions,
 } from "@/store/form";
-import type { InquiryFormOptions, RepairFormOptions } from "@/types/ticket";
+import type {
+  FindLicenseFormOptions,
+  InquiryFormOptions,
+  RepairFormOptions,
+} from "@/types/ticket";
+import type { ParsedLicenseResult } from "@/utils/notion/license-parser";
 
 // 문의 유형별 설명
 const inquiryTypeDescriptions: Record<string, string> = {
@@ -514,6 +524,172 @@ export function RepairFormView({
           >
             {result.error}
           </span>
+        )}
+      </form>
+    </div>
+  );
+}
+
+// 라이센스 찾기 폼 뷰 Props 타입
+type FindLicenseFormViewProps = {
+  initialOptions?: FindLicenseFormOptions;
+  initialError?: string | null;
+};
+
+// 라이센스 검색 결과 타입
+type SearchResult = {
+  licenseName: string;
+  results: ParsedLicenseResult[];
+};
+
+// 라이센스 찾기 폼 뷰 컴포넌트
+export function FindLicenseFormView({
+  initialOptions,
+  initialError,
+}: FindLicenseFormViewProps) {
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(
+    null,
+  );
+  const { formState, updateField } = useFindLicenseFormState();
+  const { result } = useFindLicenseFormResult();
+  const optionsQuery = useFindLicenseFormOptions(initialOptions);
+  const submitMutation = useSubmitFindLicenseForm({
+    onSuccess: (data) => {
+      setSearchResults(data.searchResults);
+    },
+  });
+
+  const options = optionsQuery.data ?? initialFindLicenseFormOptions;
+  const hasOptions = Boolean(optionsQuery.data);
+  const optionsError = hasOptions
+    ? null
+    : optionsQuery.isError
+      ? optionsQuery.error.message
+      : (initialError ?? null);
+
+  // 선택 옵션들 메모이제이션
+  const corporationOptions = useMemo(
+    () => buildSelectOptions(options.corporations, "선택해 주세요"),
+    [options.corporations],
+  );
+
+  // 폼 제출 핸들러
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!hasOptions || submitMutation.isPending) return;
+    submitMutation.mutate(formState);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-start gap-spacing-700 px-spacing-700 py-spacing-900">
+      <span className="font-semibold text-display">
+        Find License<span className="text-core-accent">.</span>
+      </span>
+
+      {/* 옵션 로드 에러 메시지 */}
+      {optionsError && (
+        <span className="text-core-status-negative text-label">
+          {optionsError} 다시 시도해주세요.
+        </span>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full flex-col items-center gap-spacing-500"
+      >
+        {/* 법인 선택 */}
+        <FormField title="법인" required>
+          <SelectInput
+            id="find-license-corporation"
+            name="find-license-corporation"
+            value={formState.corporation}
+            onChange={(e) => updateField("corporation", e.target.value)}
+            options={corporationOptions}
+            required
+            disabled={!hasOptions}
+          />
+        </FormField>
+
+        {/* 이름 입력 */}
+        <FormField title="이름" required>
+          <TextInput
+            id="find-license-requester"
+            name="find-license-requester"
+            placeholder="ex. 김자산"
+            value={formState.requester}
+            onChange={(e) => updateField("requester", e.target.value)}
+            required
+          />
+        </FormField>
+
+        {/* 제출 버튼 */}
+        <button
+          type="submit"
+          disabled={submitMutation.isPending || !hasOptions}
+          className="w-full max-w-[768px] rounded-radius-700 bg-core-accent px-spacing-500 py-spacing-300 font-semibold text-heading text-solid-white transition duration-100 hover:opacity-75 active:scale-95 active:opacity-50 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {submitMutation.isPending ? "찾는 중..." : "라이센스 찾기"}
+        </button>
+
+        {/* 제출 에러 메시지 */}
+        {result?.error && (
+          <span
+            className="text-core-status-negative text-label"
+            aria-live="polite"
+          >
+            {result.error}
+          </span>
+        )}
+
+        {/* 검색 결과 */}
+        {searchResults && searchResults.length > 0 && (
+          <div className="mt-spacing-500 w-full max-w-[768px] space-y-spacing-400">
+            <h3 className="font-semibold text-heading">
+              검색 결과 (
+              {searchResults.reduce((acc, r) => acc + r.results.length, 0)}건)
+            </h3>
+            {searchResults.map((result) => (
+              <div
+                key={result.licenseName}
+                className="rounded-radius-500 border border-line-outline bg-components-fill-standard-primary p-spacing-500"
+              >
+                <h4 className="mb-spacing-300 font-semibold text-body">
+                  {result.licenseName.replace(/_/g, " ")} (
+                  {result.results.length}건)
+                </h4>
+                <div className="space-y-spacing-300">
+                  {result.results.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-radius-400 border border-line-outline bg-surface-primary p-spacing-300"
+                    >
+                      {Object.entries(item.properties).map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="flex gap-spacing-200 text-body"
+                        >
+                          <span className="min-w-[100px] font-medium text-content-standard-secondary">
+                            {key}:
+                          </span>
+                          <span className="text-content-standard-primary">
+                            {value || "-"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {searchResults && searchResults.length === 0 && (
+          <div className="mt-spacing-500 w-full max-w-[768px] rounded-radius-500 bg-surface-secondary p-spacing-400">
+            <p className="text-center text-body text-content-standard-secondary">
+              검색 결과가 없습니다.
+            </p>
+          </div>
         )}
       </form>
     </div>

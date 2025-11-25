@@ -2,10 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import type {
-  InquiryTicketDetail,
-  RepairTicketDetail,
-} from "@/types/ticket";
+import type { InquiryTicketDetail, RepairTicketDetail } from "@/types/ticket";
 
 // 문의 티켓 상세 정보 조회 API 호출
 const fetchInquiryDetail = async (

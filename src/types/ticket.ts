@@ -56,6 +56,12 @@ export type RepairFormState = BaseFormState & {
   consent: boolean; // 동의 여부
 };
 
+// 라이센스 찾기 폼 상태 타입
+export type FindLicenseFormState = {
+  corporation: string; // 법인
+  requester: string; // 이름
+};
+
 // 폼 제출 결과 타입
 export type FormResult = {
   id?: string; // 생성된 티켓 ID
@@ -76,6 +82,11 @@ export type InquiryFormOptions = BaseFormOptions & {
 // 수리 폼 옵션 타입
 export type RepairFormOptions = BaseFormOptions & {
   issueTypes: string[]; // 문제 유형 목록
+};
+
+// 라이센스 찾기 폼 옵션 타입
+export type FindLicenseFormOptions = {
+  corporations: string[]; // 법인 목록
 };
 
 // 티켓 종류 타입
