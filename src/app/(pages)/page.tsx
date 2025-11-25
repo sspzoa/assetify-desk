@@ -45,7 +45,7 @@ export default function Home() {
       : "text-core-accent";
 
   return (
-    <div className="flex h-dvh flex-col items-center justify-start gap-spacing-700 py-spacing-900 md:justify-center">
+    <div className="flex flex-col items-center justify-start gap-spacing-700 py-spacing-900 md:h-dvh md:justify-center">
       {/* 타이틀 섹션 */}
       <div className="flex flex-col items-center justify-center gap-spacing-200">
         <span className="font-bold text-display">
@@ -57,7 +57,7 @@ export default function Home() {
       </div>
 
       {/* 주요 기능 링크 섹션 */}
-      <div className="md:mb-spacing-1000 grid w-full max-w-[768px] grid-cols-1 gap-spacing-500 p-spacing-700 md:grid-cols-2">
+      <div className="grid w-full max-w-[768px] grid-cols-1 gap-spacing-500 p-spacing-700 md:mb-spacing-1000 md:grid-cols-2">
         {/* 문의하기 링크 */}
         <Link
           href="/inquiry-form"
