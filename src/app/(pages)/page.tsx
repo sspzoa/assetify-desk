@@ -45,7 +45,7 @@ export default function Home() {
       : "text-core-accent";
 
   return (
-    <div className="flex h-dvh flex-col items-center justify-center gap-spacing-700">
+    <div className="flex h-dvh flex-col items-center justify-start gap-spacing-700 py-spacing-900 md:justify-center">
       {/* 타이틀 섹션 */}
       <div className="flex flex-col items-center justify-center gap-spacing-200">
         <span className="font-bold text-display">
@@ -100,7 +100,7 @@ export default function Home() {
       </div>
 
       {/* 하단 상태 표시 섹션 */}
-      <div className="fixed bottom-spacing-900 flex flex-col items-center justify-center gap-spacing-300">
+      <div className="flex flex-col items-center justify-center gap-spacing-300 md:fixed md:bottom-spacing-900">
         <div
           className={`flex flex-row items-center justify-center gap-spacing-150 ${statusColor}`}
         >
