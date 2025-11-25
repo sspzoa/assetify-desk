@@ -57,7 +57,7 @@ export default function Home() {
       </div>
 
       {/* 주요 기능 링크 섹션 */}
-      <div className="mb-spacing-1000 grid w-full max-w-[768px] grid-cols-1 gap-spacing-500 p-spacing-700 md:grid-cols-2">
+      <div className="md:mb-spacing-1000 grid w-full max-w-[768px] grid-cols-1 gap-spacing-500 p-spacing-700 md:grid-cols-2">
         {/* 문의하기 링크 */}
         <Link
           href="/inquiry-form"
