@@ -2,6 +2,7 @@ import type {
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
+  TextareaHTMLAttributes,
 } from "react";
 
 interface FormFieldListProps {
@@ -71,7 +72,7 @@ export function TextInput({
 }
 
 interface RichTextInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
   onChange?: (value: string) => void;
 }
 
@@ -79,7 +80,7 @@ export function RichTextInput({ onChange, ...props }: RichTextInputProps) {
   return (
     <textarea
       className={
-        "w-full cursor-pointer rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body text-content-standard-primary outline-none duration-100 placeholder:text-content-standard-tertiary focus:border-core-accent focus:ring-1 focus:ring-core-accent min-h-[180px] resize-none leading-6"
+        "min-h-[180px] w-full cursor-pointer resize-none rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body text-content-standard-primary leading-6 outline-none duration-100 placeholder:text-content-standard-tertiary focus:border-core-accent focus:ring-1 focus:ring-core-accent"
       }
       onChange={(e) => onChange?.(e.target.value)}
       {...props}

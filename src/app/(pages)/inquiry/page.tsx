@@ -66,7 +66,10 @@ export default function Inquiry() {
             required
           />
         </FormField>
-        <FormField title="자산 번호">
+        <FormField
+          title="자산 번호"
+          description="사용중인 기기에 붙어있는 자산 번호를 적어주세요."
+        >
           <TextInput
             placeholder="ex. 2309-N0001"
             value={자산번호}
@@ -90,7 +93,7 @@ export default function Inquiry() {
           required
         >
           <RichTextInput
-            placeholder="상세히 적어주실수록 더욱 빠른 처리가 가능합니다."
+            placeholder="ex. 오늘 아침부터 노트북의 전원이 켜지지 않아요."
             required
             value={문의내용}
             onChange={set문의내용}
