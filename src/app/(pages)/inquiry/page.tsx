@@ -12,6 +12,7 @@ import {
 } from "@/app/(pages)/inquiry/(atoms)/useInquiryFormStore";
 import { useInquiryForm } from "@/app/(pages)/inquiry/(hooks)/useInquiryForm";
 import { useInquiryOptions } from "@/app/(pages)/inquiry/(hooks)/useInquiryOptions";
+import Container from "@/shared/components/common/container";
 import ErrorComponent from "@/shared/components/common/errorComponent";
 import Header from "@/shared/components/common/header";
 import LoadingComponent from "@/shared/components/common/loadingComponent";
@@ -46,7 +47,7 @@ export default function Inquiry() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-start gap-spacing-700 px-spacing-400 py-spacing-700">
+    <Container>
       <Header title="Inquiry" highlighted="Form" />
       <FormFieldList onSubmit={handleSubmit}>
         <FormField title="법인명" required>
@@ -115,6 +116,6 @@ export default function Inquiry() {
         </FormField>
         <SubmitButton text="제출하기" isLoading={isSubmitting} />
       </FormFieldList>
-    </div>
+    </Container>
   );
 }

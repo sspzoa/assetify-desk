@@ -1,9 +1,10 @@
 import MenuButton from "@/app/(pages)/(home)/(components)/menuButton";
+import Container from "@/shared/components/common/container";
 import Header from "@/shared/components/common/header";
 
 export default function Home() {
   return (
-    <div className="flex w-full flex-col items-center justify-start gap-spacing-700 px-spacing-400 py-spacing-700 md:h-dvh md:justify-center">
+    <Container className="items-center md:h-dvh md:justify-center">
       <Header title="Assetify" highlighted="Desk" />
       <div className="grid w-full max-w-3xl grid-cols-1 gap-spacing-400 md:grid-cols-2">
         <MenuButton
@@ -27,6 +28,6 @@ export default function Home() {
           description="바코드를 통해 자산 정보를 확인할 수 있어요."
         />
       </div>
-    </div>
+    </Container>
   );
 }
