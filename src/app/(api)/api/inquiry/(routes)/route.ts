@@ -42,18 +42,9 @@ export async function POST(request: Request) {
     };
 
     return NextResponse.json(response);
-  } catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "data" in error &&
-      "status" in error
-    ) {
-      return NextResponse.json(error.data, { status: error.status as number });
-    }
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 },
-    );
+  } catch (error: any) {
+    return NextResponse.json(error.data || { message: error.message }, {
+      status: (error.status as number) || 500,
+    });
   }
 }
