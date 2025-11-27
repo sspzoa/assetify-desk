@@ -7,11 +7,20 @@ import type {
 
 interface FormFieldListProps {
   children: ReactNode;
+  onSubmit?: () => void | Promise<void>;
 }
 
-export function FormFieldList({ children }: FormFieldListProps) {
+export function FormFieldList({ children, onSubmit }: FormFieldListProps) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onSubmit?.();
+  };
+
   return (
-    <form className="flex w-full max-w-3xl flex-col items-center justify-start gap-spacing-400">
+    <form
+      className="flex w-full max-w-3xl flex-col items-center justify-start gap-spacing-400"
+      onSubmit={handleSubmit}
+    >
       {children}
     </form>
   );

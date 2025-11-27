@@ -9,12 +9,10 @@ import {
   법인Atom,
   부서Atom,
   자산번호Atom,
-  첨부파일Atom,
 } from "@/app/(pages)/inquiry/(atoms)/useInquiryFormStore";
 import { useInquiryForm } from "@/app/(pages)/inquiry/(hooks)/useInquiryForm";
 import { useInquiryOptions } from "@/app/(pages)/inquiry/(hooks)/useInquiryOptions";
 import Header from "@/shared/components/common/header";
-import FileInput from "@/shared/components/form/file-input";
 import {
   FormField,
   FormFieldList,
@@ -33,7 +31,6 @@ export default function Inquiry() {
   const [자산번호, set자산번호] = useAtom(자산번호Atom);
   const [문의유형, set문의유형] = useAtom(문의유형Atom);
   const [문의내용, set문의내용] = useAtom(문의내용Atom);
-  const [첨부파일, set첨부파일] = useAtom(첨부파일Atom);
   const [긴급도, set긴급도] = useAtom(긴급도Atom);
 
   const { isSubmitting, handleSubmit } = useInquiryForm();
@@ -49,7 +46,7 @@ export default function Inquiry() {
   return (
     <div className="flex flex-col items-center justify-start gap-spacing-700 px-spacing-400 py-spacing-700">
       <Header title="Inquiry" highlighted="Form" />
-      <FormFieldList>
+      <FormFieldList onSubmit={handleSubmit}>
         <FormField title="법인명" required>
           <SelectOption
             options={options?.법인 || []}
@@ -106,12 +103,6 @@ export default function Inquiry() {
             onChange={set문의내용}
           />
         </FormField>
-        <FormField
-          title="첨부 파일"
-          description="대외비 등 민감한 자료는 업로드하지 마세요."
-        >
-          <FileInput value={첨부파일} onChange={set첨부파일} />
-        </FormField>
         <FormField title="긴급도" required>
           <RadioOption
             options={options?.긴급도 || []}
@@ -120,11 +111,7 @@ export default function Inquiry() {
             required
           />
         </FormField>
-        <SubmitButton
-          text="제출하기"
-          onSubmit={handleSubmit}
-          isLoading={isSubmitting}
-        />
+        <SubmitButton text="제출하기" isLoading={isSubmitting} />
       </FormFieldList>
     </div>
   );

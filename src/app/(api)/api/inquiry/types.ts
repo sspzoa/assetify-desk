@@ -217,3 +217,232 @@ export interface InquiryRetrieveData {
   in_trash: boolean;
   request_id: string;
 }
+
+export interface InquiryPageData {
+  object: "page";
+  id: string;
+  created_time: string;
+  last_edited_time: string;
+  created_by: {
+    object: "user";
+    id: string;
+  };
+  last_edited_by: {
+    object: "user";
+    id: string;
+    name?: string;
+    avatar_url: null | string;
+    type: "person" | "bot";
+    bot?: Record<string, unknown>;
+  };
+  cover: null;
+  icon: null;
+  parent: {
+    type: "data_source_id";
+    data_source_id: string;
+    database_id: string;
+  };
+  archived: boolean;
+  in_trash: boolean;
+  is_locked: boolean;
+  properties: {
+    담당자: {
+      id: string;
+      type: "people";
+      people: Array<Record<string, unknown>>;
+    };
+    Ticket: {
+      id: string;
+      type: "unique_id";
+      unique_id: {
+        prefix: null | string;
+        number: number;
+      };
+    };
+    첨부파일: {
+      id: string;
+      type: "files";
+      files: Array<Record<string, unknown>>;
+    };
+    "Last edited": {
+      id: string;
+      type: "last_edited_time";
+      last_edited_time: string;
+    };
+    "문의 제출 시간": {
+      id: string;
+      type: "created_time";
+      created_time: string;
+    };
+    상태: {
+      id: string;
+      type: "status";
+      status: {
+        id: string;
+        name: string;
+        color: string;
+      };
+    };
+    부서: {
+      id: string;
+      type: "rich_text";
+      rich_text: Array<{
+        type: "text";
+        text: {
+          content: string;
+          link: null | string;
+        };
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: string;
+        };
+        plain_text: string;
+        href: null | string;
+      }>;
+    };
+    "Needed by": {
+      id: string;
+      type: "date";
+      date: null | string;
+    };
+    Notes: {
+      id: string;
+      type: "rich_text";
+      rich_text: Array<{
+        type: "text";
+        text: {
+          content: string;
+          link: null | string;
+        };
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: string;
+        };
+        plain_text: string;
+        href: null | string;
+      }>;
+    };
+    긴급도: {
+      id: string;
+      type: "select";
+      select: {
+        id: string;
+        name: string;
+        color: string;
+      } | null;
+    };
+    최종편집자: {
+      id: string;
+      type: "last_edited_by";
+      last_edited_by: {
+        object: "user";
+        id: string;
+        name?: string;
+        avatar_url: null | string;
+        type: "person" | "bot";
+        bot?: Record<string, unknown>;
+      };
+    };
+    Team: {
+      id: string;
+      type: "select";
+      select: {
+        id: string;
+        name: string;
+        color: string;
+      } | null;
+    };
+    법인: {
+      id: string;
+      type: "select";
+      select: {
+        id: string;
+        name: string;
+        color: string;
+      } | null;
+    };
+    문의자: {
+      id: string;
+      type: "rich_text";
+      rich_text: Array<{
+        type: "text";
+        text: {
+          content: string;
+          link: null | string;
+        };
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: string;
+        };
+        plain_text: string;
+        href: null | string;
+      }>;
+    };
+    문의유형: {
+      id: string;
+      type: "select";
+      select: {
+        id: string;
+        name: string;
+        color: string;
+      } | null;
+    };
+    자산번호: {
+      id: string;
+      type: "rich_text";
+      rich_text: Array<{
+        type: "text";
+        text: {
+          content: string;
+          link: null | string;
+        };
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: string;
+        };
+        plain_text: string;
+        href: null | string;
+      }>;
+    };
+    문의내용: {
+      id: "title";
+      type: "title";
+      title: Array<{
+        type: "text";
+        text: {
+          content: string;
+          link: null | string;
+        };
+        annotations: {
+          bold: boolean;
+          italic: boolean;
+          strikethrough: boolean;
+          underline: boolean;
+          code: boolean;
+          color: string;
+        };
+        plain_text: string;
+        href: null | string;
+      }>;
+    };
+  };
+  url: string;
+  public_url: null | string;
+  request_id: string;
+}

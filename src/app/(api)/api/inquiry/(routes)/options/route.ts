@@ -1,23 +1,33 @@
 import { NextResponse } from "next/server";
 import type { InquiryRetrieveData } from "@/app/(api)/api/inquiry/types";
-import { notionRequest } from "@/shared/lib/notion";
+import { NotionApiError, notionRequest } from "@/shared/lib/notion";
 
 export async function GET() {
-  const data_source = await notionRequest<InquiryRetrieveData>(
-    `/data_sources/${process.env.INQUIRY_TICKETS_DATA_SOURCE_ID}`,
-  );
+  try {
+    const notionResponse = await notionRequest<InquiryRetrieveData>(
+      `/data_sources/${process.env.INQUIRY_TICKETS_DATA_SOURCE_ID}`,
+    );
 
-  const options = {
-    법인: (data_source.properties.법인.select?.options || []).map(
-      (option: { name: string }) => option.name,
-    ),
-    문의유형: (data_source.properties.문의유형.select?.options || []).map(
-      (option: { name: string }) => option.name,
-    ),
-    긴급도: (data_source.properties.긴급도.select?.options || []).map(
-      (option: { name: string }) => option.name,
-    ),
-  };
+    const response = {
+      법인: (notionResponse.properties.법인.select?.options || []).map(
+        (option: { name: string }) => option.name,
+      ),
+      문의유형: (notionResponse.properties.문의유형.select?.options || []).map(
+        (option: { name: string }) => option.name,
+      ),
+      긴급도: (notionResponse.properties.긴급도.select?.options || []).map(
+        (option: { name: string }) => option.name,
+      ),
+    };
 
-  return NextResponse.json(options);
+    return NextResponse.json(response);
+  } catch (error) {
+    if (error instanceof NotionApiError) {
+      return NextResponse.json(error.data, { status: error.status });
+    }
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }
