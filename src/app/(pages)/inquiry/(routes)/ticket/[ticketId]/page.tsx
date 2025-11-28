@@ -15,12 +15,12 @@ import {
   Ticket자산번호Atom,
 } from "@/app/(pages)/inquiry/(atoms)/useInquiryTicketStore";
 import { useInquiryTicket } from "@/app/(pages)/inquiry/(hooks)/useInquiryTicket";
-import CopyLinkButton from "@/app/(pages)/inquiry/ticket/[ticketId]/(components)/copyLinkButton";
+import CopyLinkButton from "@/shared/components/form/copyLinkButton";
 import {
   TicketDetailCard,
   TicketDetailInfo,
   TicketDetailStatus,
-} from "@/app/(pages)/inquiry/ticket/[ticketId]/(components)/ticketDetailCards";
+} from "@/shared/components/form/ticketDetailCards";
 import Container from "@/shared/components/common/container";
 import ErrorComponent from "@/shared/components/common/errorComponent";
 import Header from "@/shared/components/common/header";
