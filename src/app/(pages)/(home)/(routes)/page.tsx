@@ -17,11 +17,11 @@ export default function Home() {
           title="수리 요청하기"
           description="하드웨어 고장이 난 경우 수리를 요청할 수 있어요."
         />
-        {/*<MenuButton*/}
-        {/*  href="/license"*/}
-        {/*  title="라이센스 찾기"*/}
-        {/*  description="기존에 지급받은 라이센스를 다시 확인할 수 있어요."*/}
-        {/*/>*/}
+        <MenuButton
+          href="/license"
+          title="라이센스 찾기"
+          description="기존에 지급받은 라이센스를 다시 확인할 수 있어요."
+        />
         {/*<MenuButton*/}
         {/*  href="/assets"*/}
         {/*  title="자산 관리"*/}

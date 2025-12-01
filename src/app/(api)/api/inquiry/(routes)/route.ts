@@ -28,13 +28,10 @@ export async function POST(request: Request) {
       },
     };
 
-    const notionResponse = await notionRequest<any>(
-      "/pages",
-      {
-        method: "POST",
-        body,
-      },
-    );
+    const notionResponse = await notionRequest<any>("/pages", {
+      method: "POST",
+      body,
+    });
 
     const response = {
       ticketId: notionResponse.id,

@@ -11,12 +11,9 @@ export async function GET(_: NextRequest, context: RouteContext) {
   try {
     const { ticketId } = await context.params;
 
-    const notionResponse = await notionRequest<any>(
-      `/pages/${ticketId}`,
-      {
-        method: "GET",
-      },
-    );
+    const notionResponse = await notionRequest<any>(`/pages/${ticketId}`, {
+      method: "GET",
+    });
 
     const response = {
       법인: notionResponse.properties.법인.select?.name ?? "-",

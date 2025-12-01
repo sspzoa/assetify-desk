@@ -33,20 +33,19 @@ import SubmitButton from "@/shared/components/form/submit-button";
 
 export default function Inquiry() {
   const { isLoading, error } = useInquiryOptions();
+  const { isSubmitting, handleSubmit } = useInquiryForm();
 
   const [법인Options] = useAtom(InquiryOptions법인Atom);
   const [문의유형Options] = useAtom(InquiryOptions문의유형Atom);
   const [긴급도Options] = useAtom(InquiryOptions긴급도Atom);
 
-  const [법인, set법인명] = useAtom(InquiryForm법인Atom);
+  const [법인, set법인] = useAtom(InquiryForm법인Atom);
   const [부서, set부서] = useAtom(InquiryForm부서Atom);
   const [문의자, set문의자] = useAtom(InquiryForm문의자Atom);
   const [자산번호, set자산번호] = useAtom(InquiryForm자산번호Atom);
   const [문의유형, set문의유형] = useAtom(InquiryForm문의유형Atom);
   const [문의내용, set문의내용] = useAtom(InquiryForm문의내용Atom);
   const [긴급도, set긴급도] = useAtom(InquiryForm긴급도Atom);
-
-  const { isSubmitting, handleSubmit } = useInquiryForm();
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -64,7 +63,7 @@ export default function Inquiry() {
           <SelectOption
             options={법인Options}
             value={법인}
-            onChange={set법인명}
+            onChange={set법인}
             required
           />
         </FormField>
