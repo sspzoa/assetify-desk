@@ -21,17 +21,9 @@ import Header from "@/shared/components/common/header";
 import LoadingComponent from "@/shared/components/common/loadingComponent";
 import CopyLinkButton from "@/shared/components/form/copyLinkButton";
 import { FormFieldList } from "@/shared/components/form/form-fields";
-import {
-  TicketDetailCard,
-  TicketDetailInfo,
-  TicketDetailStatus,
-} from "@/shared/components/form/ticketDetailCards";
+import { TicketDetailCard, TicketDetailInfo, TicketDetailStatus } from "@/shared/components/form/ticketDetailCards";
 
-export default function InquiryTicket({
-  params,
-}: {
-  params: Promise<{ ticketId: string }>;
-}) {
+export default function InquiryTicket({ params }: { params: Promise<{ ticketId: string }> }) {
   const { ticketId } = use(params);
   const { isLoading, error } = useInquiryTicket(ticketId);
 

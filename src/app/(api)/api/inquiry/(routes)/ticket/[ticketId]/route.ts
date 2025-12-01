@@ -18,13 +18,10 @@ export async function GET(_: NextRequest, context: RouteContext) {
     const response = {
       법인: notionResponse.properties.법인.select?.name ?? "-",
       부서: notionResponse.properties.부서.rich_text?.[0]?.text?.content ?? "-",
-      문의자:
-        notionResponse.properties.문의자.rich_text?.[0]?.text?.content ?? "-",
-      자산번호:
-        notionResponse.properties.자산번호.rich_text?.[0]?.text?.content ?? "-",
+      문의자: notionResponse.properties.문의자.rich_text?.[0]?.text?.content ?? "-",
+      자산번호: notionResponse.properties.자산번호.rich_text?.[0]?.text?.content ?? "-",
       문의유형: notionResponse.properties.문의유형.select?.name ?? "-",
-      문의내용:
-        notionResponse.properties.문의내용.title?.[0]?.text?.content ?? "-",
+      문의내용: notionResponse.properties.문의내용.title?.[0]?.text?.content ?? "-",
       긴급도: notionResponse.properties.긴급도.select?.name ?? "-",
 
       상태: notionResponse.properties.상태.status?.name ?? "-",

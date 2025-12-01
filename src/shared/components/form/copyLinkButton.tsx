@@ -16,8 +16,7 @@ export default function CopyLinkButton() {
     <button
       type="button"
       onClick={handleCopy}
-      className="cursor-pointer font-semibold text-core-accent text-label underline duration-100 hover:opacity-75 active:scale-95 active:opacity-50"
-    >
+      className="cursor-pointer font-semibold text-core-accent text-label underline duration-100 hover:opacity-75 active:scale-95 active:opacity-50">
       {" "}
       {copied ? "복사 완료!" : "링크 복사하기"}{" "}
     </button>

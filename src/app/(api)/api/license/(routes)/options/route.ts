@@ -3,14 +3,10 @@ import { notionRequest } from "@/shared/lib/notion";
 
 export async function GET() {
   try {
-    const notionResponse = await notionRequest<any>(
-      `/data_sources/${process.env.ASSETS_DATA_SOURCE_ID}`,
-    );
+    const notionResponse = await notionRequest<any>(`/data_sources/${process.env.ASSETS_DATA_SOURCE_ID}`);
 
     const response = {
-      법인명: (notionResponse.properties.법인명.select?.options || []).map(
-        (option: { name: string }) => option.name,
-      ),
+      법인명: (notionResponse.properties.법인명.select?.options || []).map((option: { name: string }) => option.name),
     };
 
     return NextResponse.json(response);

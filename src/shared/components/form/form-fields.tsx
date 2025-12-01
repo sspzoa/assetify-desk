@@ -1,10 +1,5 @@
 import type React from "react";
-import type {
-  InputHTMLAttributes,
-  ReactNode,
-  SelectHTMLAttributes,
-  TextareaHTMLAttributes,
-} from "react";
+import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 interface FormFieldListProps {
   children: ReactNode;
@@ -18,10 +13,7 @@ export function FormFieldList({ children, onSubmit }: FormFieldListProps) {
   };
 
   return (
-    <form
-      className="flex w-full max-w-3xl flex-col items-center justify-start gap-spacing-400"
-      onSubmit={handleSubmit}
-    >
+    <form className="flex w-full max-w-3xl flex-col items-center justify-start gap-spacing-400" onSubmit={handleSubmit}>
       {children}
     </form>
   );
@@ -34,12 +26,7 @@ interface FormFieldProps {
   children: ReactNode;
 }
 
-export function FormField({
-  title,
-  description,
-  required,
-  children,
-}: FormFieldProps) {
+export function FormField({ title, description, required, children }: FormFieldProps) {
   return (
     <div className="flex w-full flex-col items-start justify-center gap-spacing-400 rounded-radius-400 border border-line-outline bg-components-fill-standard-primary px-spacing-500 py-spacing-400">
       <div className="flex w-full flex-col items-start justify-center gap-spacing-50">
@@ -48,9 +35,7 @@ export function FormField({
           <span className="text-core-accent">{required && "*"}</span>
         </span>
         {description && (
-          <span className="whitespace-pre-wrap text-content-standard-secondary text-label">
-            {description}
-          </span>
+          <span className="whitespace-pre-wrap text-content-standard-secondary text-label">{description}</span>
         )}
       </div>
       {children}
@@ -58,17 +43,12 @@ export function FormField({
   );
 }
 
-interface TextInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   type?: string;
   onChange?: (value: string) => void;
 }
 
-export function TextInput({
-  type = "text",
-  onChange,
-  ...props
-}: TextInputProps) {
+export function TextInput({ type = "text", onChange, ...props }: TextInputProps) {
   return (
     <input
       className={
@@ -81,8 +61,7 @@ export function TextInput({
   );
 }
 
-interface RichTextInputProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+interface RichTextInputProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
   onChange?: (value: string) => void;
 }
 
@@ -98,25 +77,19 @@ export function RichTextInput({ onChange, ...props }: RichTextInputProps) {
   );
 }
 
-interface SelectOptionProps
-  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
+interface SelectOptionProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
   options: string[];
   onChange?: (value: string) => void;
 }
 
-export function SelectOption({
-  options,
-  onChange,
-  ...props
-}: SelectOptionProps) {
+export function SelectOption({ options, onChange, ...props }: SelectOptionProps) {
   return (
     <select
       className={
         "w-full cursor-pointer appearance-none rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body outline-none duration-100 placeholder:text-content-standard-tertiary focus:border-core-accent focus:ring-1 focus:ring-core-accent"
       }
       onChange={(e) => onChange?.(e.target.value)}
-      {...props}
-    >
+      {...props}>
       <option value="" hidden>
         선택해 주세요.
       </option>
@@ -129,27 +102,19 @@ export function SelectOption({
   );
 }
 
-interface RadioOptionProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type"> {
+interface RadioOptionProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type"> {
   options: string[];
   onChange?: (value: string) => void;
   value?: string;
 }
 
-export function RadioOption({
-  options,
-  onChange,
-  value,
-  name,
-  ...props
-}: RadioOptionProps) {
+export function RadioOption({ options, onChange, value, name, ...props }: RadioOptionProps) {
   return (
     <div className="flex w-full flex-col gap-spacing-200">
       {options.map((option) => (
         <label
           key={option}
-          className="flex cursor-pointer items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body duration-100 hover:border-core-accent hover:ring-1 hover:ring-core-accent"
-        >
+          className="flex cursor-pointer items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body duration-100 hover:border-core-accent hover:ring-1 hover:ring-core-accent">
           <input
             type="radio"
             name={name}
@@ -166,19 +131,13 @@ export function RadioOption({
   );
 }
 
-interface CheckboxOptionProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type"> {
+interface CheckboxOptionProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type"> {
   label: string;
   onChange?: (checked: boolean) => void;
   checked?: boolean;
 }
 
-export function CheckboxOption({
-  label,
-  onChange,
-  checked,
-  ...props
-}: CheckboxOptionProps) {
+export function CheckboxOption({ label, onChange, checked, ...props }: CheckboxOptionProps) {
   return (
     <label className="flex w-full cursor-pointer items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300 text-body duration-100 hover:border-core-accent hover:ring-1 hover:ring-core-accent">
       <input

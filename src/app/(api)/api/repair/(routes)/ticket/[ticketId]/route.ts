@@ -18,24 +18,16 @@ export async function GET(_: NextRequest, context: RouteContext) {
     const response = {
       법인: notionResponse.properties.법인.select?.name ?? "-",
       부서: notionResponse.properties.부서.rich_text?.[0]?.text?.content ?? "-",
-      문의자:
-        notionResponse.properties.문의자.rich_text?.[0]?.text?.content ?? "-",
-      실제근무위치:
-        notionResponse.properties["실제 근무 위치"].rich_text?.[0]?.text
-          ?.content ?? "-",
-      자산번호:
-        notionResponse.properties.자산번호.rich_text?.[0]?.text?.content ?? "-",
-      고장내역:
-        notionResponse.properties["고장 내역"].multi_select[0]?.name ?? "-",
-      고장증상:
-        notionResponse.properties.고장증상.title?.[0]?.text?.content ?? "-",
+      문의자: notionResponse.properties.문의자.rich_text?.[0]?.text?.content ?? "-",
+      실제근무위치: notionResponse.properties["실제 근무 위치"].rich_text?.[0]?.text?.content ?? "-",
+      자산번호: notionResponse.properties.자산번호.rich_text?.[0]?.text?.content ?? "-",
+      고장내역: notionResponse.properties["고장 내역"].multi_select[0]?.name ?? "-",
+      고장증상: notionResponse.properties.고장증상.title?.[0]?.text?.content ?? "-",
       긴급도: notionResponse.properties.긴급도.select?.name ?? "-",
-      수리진행동의서:
-        notionResponse.properties["수리 진행 동의서"].checkbox ?? false,
+      수리진행동의서: notionResponse.properties["수리 진행 동의서"].checkbox ?? false,
 
       상태: notionResponse.properties.상태.status?.name ?? "-",
-      조치내용:
-        notionResponse.properties.조치내용.rich_text?.[0]?.text?.content ?? "-",
+      조치내용: notionResponse.properties.조치내용.rich_text?.[0]?.text?.content ?? "-",
       담당자: notionResponse.properties.담당자.people?.[0]?.name ?? "-",
       과실여부: notionResponse.properties.과실여부.select?.name ?? "-",
       수리일정: notionResponse.properties["수리 일정"].date?.start ?? "-",

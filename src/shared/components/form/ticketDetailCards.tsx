@@ -5,10 +5,7 @@ interface TicketDetailCardProps {
   className?: string;
 }
 
-export function TicketDetailCard({
-  children,
-  className,
-}: TicketDetailCardProps) {
+export function TicketDetailCard({ children, className }: TicketDetailCardProps) {
   const baseClasses =
     "w-full rounded-radius-400 border border-line-outline bg-components-fill-standard-primary px-spacing-500 py-spacing-400";
 

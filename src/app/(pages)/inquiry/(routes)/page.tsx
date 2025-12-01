@@ -60,54 +60,21 @@ export default function Inquiry() {
       <Header title="Inquiry" highlighted="Form" />
       <FormFieldList onSubmit={handleSubmit}>
         <FormField title="법인명" required>
-          <SelectOption
-            options={법인Options}
-            value={법인}
-            onChange={set법인}
-            required
-          />
+          <SelectOption options={법인Options} value={법인} onChange={set법인} required />
         </FormField>
         <FormField title="부서">
-          <TextInput
-            placeholder="ex. 경영지원팀 or 자산관리파트"
-            value={부서}
-            onChange={set부서}
-          />
+          <TextInput placeholder="ex. 경영지원팀 or 자산관리파트" value={부서} onChange={set부서} />
         </FormField>
         <FormField title="문의자 성함" required>
-          <TextInput
-            placeholder="ex. 김자산"
-            value={문의자}
-            onChange={set문의자}
-            required
-          />
+          <TextInput placeholder="ex. 김자산" value={문의자} onChange={set문의자} required />
         </FormField>
-        <FormField
-          title="자산 번호"
-          description="사용중인 기기에 붙어있는 자산 번호를 적어주세요."
-        >
-          <TextInput
-            placeholder="ex. 2309-N0001"
-            value={자산번호}
-            onChange={set자산번호}
-          />
+        <FormField title="자산 번호" description="사용중인 기기에 붙어있는 자산 번호를 적어주세요.">
+          <TextInput placeholder="ex. 2309-N0001" value={자산번호} onChange={set자산번호} />
         </FormField>
-        <FormField
-          title="문의 유형"
-          description="필요하신 지원 유형을 골라주세요."
-          required
-        >
-          <RadioOption
-            options={문의유형Options}
-            value={문의유형}
-            onChange={set문의유형}
-          />
+        <FormField title="문의 유형" description="필요하신 지원 유형을 골라주세요." required>
+          <RadioOption options={문의유형Options} value={문의유형} onChange={set문의유형} />
         </FormField>
-        <FormField
-          title="문의 내용"
-          description="필요한 도움이나 요청 사항을 구체적으로 입력해 주세요."
-          required
-        >
+        <FormField title="문의 내용" description="필요한 도움이나 요청 사항을 구체적으로 입력해 주세요." required>
           <RichTextInput
             placeholder="ex. 오늘 아침부터 노트북의 전원이 켜지지 않아요."
             required
@@ -116,12 +83,7 @@ export default function Inquiry() {
           />
         </FormField>
         <FormField title="긴급도" required>
-          <RadioOption
-            options={긴급도Options}
-            value={긴급도}
-            onChange={set긴급도}
-            required
-          />
+          <RadioOption options={긴급도Options} value={긴급도} onChange={set긴급도} required />
         </FormField>
         <SubmitButton text="제출하기" isLoading={isSubmitting} />
       </FormFieldList>

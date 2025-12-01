@@ -2,8 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { notionRequest } from "@/shared/lib/notion";
 
-const getRichText = (page: any, field: string): string =>
-  page.properties[field]?.rich_text?.[0]?.text?.content ?? "-";
+const getRichText = (page: any, field: string): string => page.properties[field]?.rich_text?.[0]?.text?.content ?? "-";
 
 const extractFields = (fields: string[]) => (page: any) =>
   fields.reduce(
@@ -33,11 +32,7 @@ const LICENSE_CONFIGS = {
   },
   "Adobe PDF": {
     dataSourceId: process.env.ADOBE_PDF_LICENSE_DATA_SOURCE_ID,
-    extractData: extractFields([
-      "소프트웨어",
-      "시리얼넘버/win",
-      "시리얼넘버/mac",
-    ]),
+    extractData: extractFields(["소프트웨어", "시리얼넘버/win", "시리얼넘버/MAC"]),
   },
   "adobe-creative-cloud": {
     dataSourceId: process.env.ADOBE_CREATIVE_CLOUD_LICENSE_DATA_SOURCE_ID,
@@ -84,50 +79,44 @@ export async function POST(request: NextRequest) {
     const { 법인명, 사용자명 } = body;
 
     if (!법인명 || !사용자명) {
-      return NextResponse.json(
-        { message: "법인명과 사용자명은 필수입니다." },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "법인명과 사용자명은 필수입니다." }, { status: 400 });
     }
 
-    const searchPromises = Object.entries(LICENSE_CONFIGS).map(
-      async ([licenseType, config]) => {
-        const response = await notionRequest<any>(
-          `/data_sources/${config.dataSourceId}/query`,
-          {
-            method: "POST",
-            body: {
-              filter: {
-                and: [
-                  {
-                    property: "법인명",
-                    select: {
-                      equals: 법인명,
-                    },
-                  },
-                  {
-                    property: "사용자명",
-                    rich_text: {
-                      equals: 사용자명,
-                    },
-                  },
-                ],
+    const searchPromises = Object.entries(LICENSE_CONFIGS).map(async ([licenseType, config]) => {
+      const response = await notionRequest<any>(`/data_sources/${config.dataSourceId}/query`, {
+        method: "POST",
+        body: {
+          filter: {
+            and: [
+              {
+                property: "법인명",
+                select: {
+                  equals: 법인명,
+                },
               },
-            },
+              {
+                property: "사용자명",
+                rich_text: {
+                  equals: 사용자명,
+                },
+              },
+            ],
           },
-        );
+        },
+      });
 
-        const extractedData = response.results.map((page: any) =>
-          config.extractData(page),
-        );
+      const extractedData = response.results.map((page: any) => config.extractData(page));
 
-        return { licenseType, data: extractedData };
-      },
-    );
+      return { licenseType, data: extractedData };
+    });
 
     const results = await Promise.all(searchPromises);
 
     const filteredResults = results.filter((result) => result.data.length > 0);
+
+    if (filteredResults.length === 0) {
+      return NextResponse.json({ message: "검색 결과가 없습니다." }, { status: 404 });
+    }
 
     return NextResponse.json(filteredResults);
   } catch (error: any) {

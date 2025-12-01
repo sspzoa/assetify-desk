@@ -28,17 +28,9 @@ import Header from "@/shared/components/common/header";
 import LoadingComponent from "@/shared/components/common/loadingComponent";
 import CopyLinkButton from "@/shared/components/form/copyLinkButton";
 import { FormFieldList } from "@/shared/components/form/form-fields";
-import {
-  TicketDetailCard,
-  TicketDetailInfo,
-  TicketDetailStatus,
-} from "@/shared/components/form/ticketDetailCards";
+import { TicketDetailCard, TicketDetailInfo, TicketDetailStatus } from "@/shared/components/form/ticketDetailCards";
 
-export default function RepairTicket({
-  params,
-}: {
-  params: Promise<{ ticketId: string }>;
-}) {
+export default function RepairTicket({ params }: { params: Promise<{ ticketId: string }> }) {
   const { ticketId } = use(params);
   const { isLoading, error } = useRepairTicket(ticketId);
 
@@ -96,10 +88,7 @@ export default function RepairTicket({
           <TicketDetailInfo label="고장 내역" value={고장내역} />
           <TicketDetailInfo label="고장 증상" value={고장증상} />
           <TicketDetailInfo label="긴급도" value={긴급도} />
-          <TicketDetailInfo
-            label="수리 진행 동의서"
-            value={수리진행동의서 ? "동의함" : "동의하지 않음"}
-          />
+          <TicketDetailInfo label="수리 진행 동의서" value={수리진행동의서 ? "동의함" : "동의하지 않음"} />
           <TicketDetailInfo label="생성일시" value={createdTime} />
         </TicketDetailCard>
       </FormFieldList>
