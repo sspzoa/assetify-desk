@@ -6,13 +6,13 @@ interface LicenseOptionsResponse {
   법인명: string[];
 }
 
-export const useLicenseOptions = () => {
+export const useLicenseOptions = (sessionId: string) => {
   const set법인명 = useSetAtom(LicenseOptions법인명Atom);
 
   return useQuery<LicenseOptionsResponse>({
-    queryKey: ["licenseOptions"],
+    queryKey: ["licenseOptions", sessionId],
     queryFn: async () => {
-      const response = await fetch("/api/license/options");
+      const response = await fetch(`/api/license/${sessionId}/options`);
       const data = await response.json();
 
       if (!response.ok) {

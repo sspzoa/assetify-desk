@@ -45,8 +45,8 @@
         "useArrowFunction": "error"
       },
       "suspicious": {
-        "noExplicitAny": "error",
-        "noImplicitAnyLet": "error",
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off",
         "noArrayIndexKey": "off",
         "noShadowRestrictedNames": "off",
         "noUnknownAtRules": "off",

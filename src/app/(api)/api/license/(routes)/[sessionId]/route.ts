@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { notionRequest } from "@/shared/lib/notion";
+import { checkSession } from "@/shared/lib/validateSession";
 
 const getRichText = (page: any, field: string): string => page.properties[field]?.rich_text?.[0]?.text?.content ?? "-";
 
@@ -73,8 +74,15 @@ interface RequestBody {
   사용자명: string;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ sessionId: string }> }) {
   try {
+    const { sessionId } = await params;
+
+    const sessionError = await checkSession(sessionId);
+    if (sessionError) {
+      return sessionError;
+    }
+
     const body: RequestBody = await request.json();
     const { 법인명, 사용자명 } = body;
 

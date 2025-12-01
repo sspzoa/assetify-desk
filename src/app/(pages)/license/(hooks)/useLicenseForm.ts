@@ -12,7 +12,7 @@ interface UseLicenseFormReturn {
   handleSubmit: () => Promise<void>;
 }
 
-export const useLicenseForm = (): UseLicenseFormReturn => {
+export const useLicenseForm = (sessionId: string): UseLicenseFormReturn => {
   const 법인명 = useAtomValue(LicenseForm법인명Atom);
   const 사용자명 = useAtomValue(LicenseForm사용자명Atom);
   const setResults = useSetAtom(LicenseResultsAtom);
@@ -20,7 +20,7 @@ export const useLicenseForm = (): UseLicenseFormReturn => {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/license", {
+      const response = await fetch(`/api/license/${sessionId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

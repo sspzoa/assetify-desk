@@ -1,9 +1,11 @@
 "use client";
 
 import { useAtom, useAtomValue } from "jotai";
+import { use } from "react";
 import { LicenseForm법인명Atom, LicenseForm사용자명Atom } from "@/app/(pages)/license/(atoms)/useLicenseFormStore";
 import { LicenseOptions법인명Atom } from "@/app/(pages)/license/(atoms)/useLicenseOptionsStore";
 import { LicenseResultsAtom, LicenseSearchErrorAtom } from "@/app/(pages)/license/(atoms)/useLicenseStore";
+import SessionTimer from "@/app/(pages)/license/(components)/sessionTimer";
 import { useLicenseForm } from "@/app/(pages)/license/(hooks)/useLicenseForm";
 import { useLicenseOptions } from "@/app/(pages)/license/(hooks)/useLicenseOptions";
 import Container from "@/shared/components/common/container";
@@ -13,15 +15,17 @@ import LoadingComponent from "@/shared/components/common/loadingComponent";
 import { FormField, FormFieldList, SelectOption, TextInput } from "@/shared/components/form/form-fields";
 import SubmitButton from "@/shared/components/form/submit-button";
 
-export default function License() {
-  const { isLoading, error } = useLicenseOptions();
+export default function License({ params }: { params: Promise<{ sessionId: string }> }) {
+  const { sessionId } = use(params);
+
+  const { isLoading, error } = useLicenseOptions(sessionId);
 
   const [법인명Options] = useAtom(LicenseOptions법인명Atom);
 
   const [법인명, set법인명] = useAtom(LicenseForm법인명Atom);
   const [사용자명, set사용자명] = useAtom(LicenseForm사용자명Atom);
 
-  const { isSubmitting, handleSubmit } = useLicenseForm();
+  const { isSubmitting, handleSubmit } = useLicenseForm(sessionId);
   const results = useAtomValue(LicenseResultsAtom);
   const searchError = useAtomValue(LicenseSearchErrorAtom);
 
@@ -36,6 +40,7 @@ export default function License() {
   return (
     <Container>
       <Header title="License" highlighted="Finder" />
+      <SessionTimer sessionId={sessionId} />
       <FormFieldList onSubmit={handleSubmit}>
         <FormField title="법인명" required>
           <SelectOption options={법인명Options} value={법인명} onChange={set법인명} required />

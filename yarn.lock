@@ -836,6 +836,7 @@ __metadata:
     "@vercel/speed-insights": "npm:^1.2.0"
     babel-plugin-react-compiler: "npm:1.0.0"
     crypto: "npm:^1.0.1"
+    jose: "npm:^6.1.2"
     jotai: "npm:^2.15.1"
     lucide-react: "npm:^0.554.0"
     next: "npm:16.0.3"
@@ -914,6 +915,13 @@ __metadata:
   bin:
     jiti: lib/jiti-cli.mjs
   checksum: 10c0/79b2e96a8e623f66c1b703b98ec1b8be4500e1d217e09b09e343471bbb9c105381b83edbb979d01cef18318cc45ce6e153571b6c83122170eefa531c64b6789b
+  languageName: node
+  linkType: hard
+
+"jose@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "jose@npm:6.1.2"
+  checksum: 10c0/55f79426f43e652ed6d5de938d50f66bb0a10dcae078db81a23f8d3303e889ce226f000e815f3211f9956bb84badce10da892d130d40fe2eca658045a6f1778e
   languageName: node
   linkType: hard
 
