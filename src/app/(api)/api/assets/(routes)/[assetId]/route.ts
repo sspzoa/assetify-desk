@@ -10,12 +10,12 @@ export async function GET(_: NextRequest, context: RouteContext) {
   try {
     const { assetId } = await context.params;
 
-    const notionResponse = await notionRequest<any>(`/data_source/${process.env.ASSETS_DATA_SOURCE_ID}/query`, {
+    const notionResponse = await notionRequest<any>(`/data_sources/${process.env.ASSETS_DATA_SOURCE_ID}/query`, {
       method: "POST",
       body: {
         filter: {
           property: "자산번호",
-          select: {
+          rich_text: {
             equals: assetId,
           },
         },
