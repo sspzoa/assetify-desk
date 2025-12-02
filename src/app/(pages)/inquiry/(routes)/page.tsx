@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   InquiryForm긴급도Atom,
   InquiryForm문의내용Atom,
@@ -35,9 +35,9 @@ export default function Inquiry() {
   const { isLoading, error } = useInquiryOptions();
   const { isSubmitting, handleSubmit } = useInquiryForm();
 
-  const [법인Options] = useAtom(InquiryOptions법인Atom);
-  const [문의유형Options] = useAtom(InquiryOptions문의유형Atom);
-  const [긴급도Options] = useAtom(InquiryOptions긴급도Atom);
+  const 법인Options = useAtomValue(InquiryOptions법인Atom);
+  const 문의유형Options = useAtomValue(InquiryOptions문의유형Atom);
+  const 긴급도Options = useAtomValue(InquiryOptions긴급도Atom);
 
   const [법인, set법인] = useAtom(InquiryForm법인Atom);
   const [부서, set부서] = useAtom(InquiryForm부서Atom);

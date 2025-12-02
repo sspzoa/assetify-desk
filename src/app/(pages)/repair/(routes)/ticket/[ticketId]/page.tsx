@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { use } from "react";
 import {
   RepairTicketCreatedTimeAtom,
@@ -34,23 +34,23 @@ export default function RepairTicket({ params }: { params: Promise<{ ticketId: s
   const { ticketId } = use(params);
   const { isLoading, error } = useRepairTicket(ticketId);
 
-  const [법인] = useAtom(RepairTicket법인Atom);
-  const [부서] = useAtom(RepairTicket부서Atom);
-  const [문의자] = useAtom(RepairTicket문의자Atom);
-  const [실제근무위치] = useAtom(RepairTicket실제근무위치Atom);
-  const [자산번호] = useAtom(RepairTicket자산번호Atom);
-  const [고장내역] = useAtom(RepairTicket고장내역Atom);
-  const [고장증상] = useAtom(RepairTicket고장증상Atom);
-  const [긴급도] = useAtom(RepairTicket긴급도Atom);
-  const [수리진행동의서] = useAtom(RepairTicket수리진행동의서Atom);
-  const [상태] = useAtom(RepairTicket상태Atom);
-  const [조치내용] = useAtom(RepairTicket조치내용Atom);
-  const [담당자] = useAtom(RepairTicket담당자Atom);
-  const [과실여부] = useAtom(RepairTicket과실여부Atom);
-  const [수리일정] = useAtom(RepairTicket수리일정Atom);
-  const [단가] = useAtom(RepairTicket단가Atom);
-  const [수리진행상황] = useAtom(RepairTicket수리진행상황Atom);
-  const [createdTime] = useAtom(RepairTicketCreatedTimeAtom);
+  const 법인 = useAtomValue(RepairTicket법인Atom);
+  const 부서 = useAtomValue(RepairTicket부서Atom);
+  const 문의자 = useAtomValue(RepairTicket문의자Atom);
+  const 실제근무위치 = useAtomValue(RepairTicket실제근무위치Atom);
+  const 자산번호 = useAtomValue(RepairTicket자산번호Atom);
+  const 고장내역 = useAtomValue(RepairTicket고장내역Atom);
+  const 고장증상 = useAtomValue(RepairTicket고장증상Atom);
+  const 긴급도 = useAtomValue(RepairTicket긴급도Atom);
+  const 수리진행동의서 = useAtomValue(RepairTicket수리진행동의서Atom);
+  const 상태 = useAtomValue(RepairTicket상태Atom);
+  const 조치내용 = useAtomValue(RepairTicket조치내용Atom);
+  const 담당자 = useAtomValue(RepairTicket담당자Atom);
+  const 과실여부 = useAtomValue(RepairTicket과실여부Atom);
+  const 수리일정 = useAtomValue(RepairTicket수리일정Atom);
+  const 단가 = useAtomValue(RepairTicket단가Atom);
+  const 수리진행상황 = useAtomValue(RepairTicket수리진행상황Atom);
+  const createdTime = useAtomValue(RepairTicketCreatedTimeAtom);
 
   if (isLoading) {
     return <LoadingComponent />;

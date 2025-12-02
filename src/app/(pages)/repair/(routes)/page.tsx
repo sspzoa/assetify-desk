@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
   RepairForm고장내역Atom,
   RepairForm고장증상Atom,
@@ -37,9 +37,9 @@ import SubmitButton from "@/shared/components/form/submit-button";
 export default function Repair() {
   const { isLoading, error } = useRepairOptions();
 
-  const [법인Options] = useAtom(RepairOptions법인Atom);
-  const [고장내역Options] = useAtom(RepairOptions고장내역Atom);
-  const [긴급도Options] = useAtom(RepairOptions긴급도Atom);
+  const 법인Options = useAtomValue(RepairOptions법인Atom);
+  const 고장내역Options = useAtomValue(RepairOptions고장내역Atom);
+  const 긴급도Options = useAtomValue(RepairOptions긴급도Atom);
 
   const [법인, set법인] = useAtom(RepairForm법인Atom);
   const [부서, set부서] = useAtom(RepairForm부서Atom);

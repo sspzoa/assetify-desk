@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { use } from "react";
 import {
   InquiryTicketCreatedTimeAtom,
@@ -27,16 +27,16 @@ export default function InquiryTicket({ params }: { params: Promise<{ ticketId: 
   const { ticketId } = use(params);
   const { isLoading, error } = useInquiryTicket(ticketId);
 
-  const [법인] = useAtom(InquiryTicket법인Atom);
-  const [부서] = useAtom(InquiryTicket부서Atom);
-  const [문의자] = useAtom(InquiryTicket문의자Atom);
-  const [자산번호] = useAtom(InquiryTicket자산번호Atom);
-  const [문의유형] = useAtom(InquiryTicket문의유형Atom);
-  const [문의내용] = useAtom(InquiryTicket문의내용Atom);
-  const [긴급도] = useAtom(InquiryTicket긴급도Atom);
-  const [상태] = useAtom(InquiryTicket상태Atom);
-  const [담당자] = useAtom(InquiryTicket담당자Atom);
-  const [createdTime] = useAtom(InquiryTicketCreatedTimeAtom);
+  const 법인 = useAtomValue(InquiryTicket법인Atom);
+  const 부서 = useAtomValue(InquiryTicket부서Atom);
+  const 문의자 = useAtomValue(InquiryTicket문의자Atom);
+  const 자산번호 = useAtomValue(InquiryTicket자산번호Atom);
+  const 문의유형 = useAtomValue(InquiryTicket문의유형Atom);
+  const 문의내용 = useAtomValue(InquiryTicket문의내용Atom);
+  const 긴급도 = useAtomValue(InquiryTicket긴급도Atom);
+  const 상태 = useAtomValue(InquiryTicket상태Atom);
+  const 담당자 = useAtomValue(InquiryTicket담당자Atom);
+  const createdTime = useAtomValue(InquiryTicketCreatedTimeAtom);
 
   if (isLoading) {
     return <LoadingComponent />;

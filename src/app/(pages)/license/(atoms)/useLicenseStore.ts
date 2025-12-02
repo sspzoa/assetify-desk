@@ -10,4 +10,3 @@ export interface LicenseResult {
 }
 
 export const LicenseResultsAtom = atom<LicenseResult[]>([]);
-export const LicenseSearchErrorAtom = atom<string | null>(null);
