@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
 import { notionRequest } from "@/shared/lib/notion";
-import { checkSession } from "@/shared/lib/validateSession";
 
-export async function GET(_request: Request, { params }: { params: Promise<{ sessionId: string }> }) {
+export async function GET() {
   try {
-    const { sessionId } = await params;
-
-    const sessionError = await checkSession(sessionId);
-    if (sessionError) {
-      return sessionError;
-    }
-
     const notionResponse = await notionRequest<any>(`/data_sources/${process.env.ASSETS_DATA_SOURCE_ID}`);
 
     const response = {

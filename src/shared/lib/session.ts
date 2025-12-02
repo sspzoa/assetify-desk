@@ -1,23 +1,25 @@
 import { jwtVerify, SignJWT } from "jose";
 
 export interface Session {
-  createdAt: number;
   expiresAt: number;
 }
 
 const SESSION_DURATION = 60 * 60 * 1000;
 
 const getSecretKey = () => {
-  const secret = process.env.SECRET_KEY || "default-secret-key-change-in-production";
+  const secret = process.env.SECRET_KEY;
+
+  if (!secret) {
+    throw new Error("SECRET_KEY environment variable is not set");
+  }
+
   return new TextEncoder().encode(secret);
 };
 
 export async function createSession(): Promise<{ session: Session; token: string }> {
-  const createdAt = Date.now();
-  const expiresAt = createdAt + SESSION_DURATION;
+  const expiresAt = Date.now() + SESSION_DURATION;
 
   const session: Session = {
-    createdAt,
     expiresAt,
   };
 
@@ -33,12 +35,7 @@ export async function createSession(): Promise<{ session: Session; token: string
 
 export async function validateSession(token: string): Promise<boolean> {
   try {
-    const { payload } = await jwtVerify(token, getSecretKey());
-
-    if (typeof payload.expiresAt === "number" && payload.expiresAt < Date.now()) {
-      return false;
-    }
-
+    await jwtVerify(token, getSecretKey());
     return true;
   } catch {
     return false;
@@ -49,17 +46,8 @@ export async function getSession(token: string): Promise<Session | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
 
-    const expiresAt = payload.expiresAt as number;
-
-    if (expiresAt < Date.now()) {
-      return null;
-    }
-
-    const createdAt = expiresAt - SESSION_DURATION;
-
     return {
-      createdAt,
-      expiresAt,
+      expiresAt: payload.expiresAt as number,
     };
   } catch {
     return null;

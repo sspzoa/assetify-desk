@@ -9,7 +9,11 @@ export const useSession = (sessionId: string) => {
   return useQuery<SessionInfo>({
     queryKey: ["session", sessionId],
     queryFn: async () => {
-      const response = await fetch(`/api/session/${sessionId}`);
+      const response = await fetch("/api/session/query", {
+        headers: {
+          "X-Session-Id": sessionId,
+        },
+      });
       const data = await response.json();
 
       if (!response.ok) {

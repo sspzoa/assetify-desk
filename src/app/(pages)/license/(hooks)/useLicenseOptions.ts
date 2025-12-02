@@ -12,7 +12,11 @@ export const useLicenseOptions = (sessionId: string) => {
   return useQuery<LicenseOptionsResponse>({
     queryKey: ["licenseOptions", sessionId],
     queryFn: async () => {
-      const response = await fetch(`/api/license/${sessionId}/options`);
+      const response = await fetch("/api/license/options", {
+        headers: {
+          "X-Session-Id": sessionId,
+        },
+      });
       const data = await response.json();
 
       if (!response.ok) {

@@ -16,10 +16,11 @@ export const useLicenseForm = (sessionId: string): UseLicenseFormReturn => {
 
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/license/${sessionId}`, {
+      const response = await fetch("/api/license", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Session-Id": sessionId,
         },
         body: JSON.stringify({
           법인명,
