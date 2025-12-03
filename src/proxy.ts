@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 import { validateBearerToken } from "@/shared/lib/auth";
 import { validateSession } from "@/shared/lib/session";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/assets")) {
     const authHeader = request.headers.get("authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "토큰이 필요합니다." }, { status: 401 });
+      return NextResponse.json({ message: "토큰이 필요합니다." }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
     const isValid = await validateBearerToken(token);
 
     if (!isValid) {
-      return NextResponse.json({ error: "유효하지 않은 토큰입니다." }, { status: 401 });
+      return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
     }
   }
 
