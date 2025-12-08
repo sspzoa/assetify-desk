@@ -10,6 +10,7 @@ import {
 
 interface UseStocktakingFormReturn {
   isSubmitting: boolean;
+  error: Error | null;
   handleSubmit: () => Promise<void>;
 }
 
@@ -28,7 +29,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
     set자산번호("");
   };
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync, isPending, error } = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
       formData.append("법인명", 법인명);
@@ -50,12 +51,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
       return data;
     },
     onSuccess: () => {
-      localStorage.setItem("stocktakingParticipated", "true");
-
-      alert("재고조사가 성공적으로 제출되었습니다!");
-
       resetForm();
-
       router.push("/");
     },
   });
@@ -66,6 +62,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
 
   return {
     isSubmitting: isPending,
+    error,
     handleSubmit,
   };
 };

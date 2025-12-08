@@ -10,6 +10,25 @@ export async function POST(request: Request) {
     const 사용자 = formData.get("사용자") as string;
     const 자산번호 = formData.get("자산번호") as string;
 
+    const checkResponse = await notionRequest<any>(`/data_sources/${process.env.STOCKTAKING_DATA_SOURCE_ID}/query`, {
+      method: "POST",
+      body: {
+        filter: {
+          property: "자산번호",
+          rich_text: {
+            equals: 자산번호,
+          },
+        },
+      },
+    });
+
+    if (checkResponse.results.length > 0) {
+      return NextResponse.json(
+        { message: "이미 제출된 자산 번호입니다. IdsTrust 자산관리파트로 문의주세요." },
+        { status: 400 },
+      );
+    }
+
     const body = {
       parent: {
         data_source_id: process.env.STOCKTAKING_DATA_SOURCE_ID,

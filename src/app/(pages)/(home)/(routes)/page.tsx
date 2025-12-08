@@ -1,10 +1,29 @@
 "use client";
 
 import MenuButton from "@/app/(pages)/(home)/(components)/menuButton";
+import { useStocktakingInfo } from "@/app/(pages)/(home)/(hooks)/useStocktakingInfo";
 import Container from "@/shared/components/common/container";
+import ErrorComponent from "@/shared/components/common/errorComponent";
 import Header from "@/shared/components/common/header";
+import LoadingComponent from "@/shared/components/common/loadingComponent";
 
 export default function Home() {
+  const { data: stocktakingInfo, isLoading, error } = useStocktakingInfo();
+
+  const isStocktakingActive = () => {
+    if (!stocktakingInfo?.시작날짜 || !stocktakingInfo?.끝날짜) return false;
+    const today = new Date().toISOString().split("T")[0];
+    return today >= stocktakingInfo.시작날짜 && today <= stocktakingInfo.끝날짜;
+  };
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (error) {
+    return <ErrorComponent errorMessage={error.message} />;
+  }
+
   return (
     <Container className="items-center md:h-dvh md:justify-center">
       <Header title="Assetify" highlighted="Desk" />
@@ -15,6 +34,13 @@ export default function Home() {
           title="수리 요청하기"
           description="하드웨어 고장이 난 경우 수리를 요청할 수 있어요."
         />
+        {isStocktakingActive() && (
+          <MenuButton
+            href="/stocktaking"
+            title={stocktakingInfo?.실사제목 || "재고조사"}
+            description={`${stocktakingInfo?.시작날짜} ~ ${stocktakingInfo?.끝날짜}`}
+          />
+        )}
       </div>
     </Container>
   );
