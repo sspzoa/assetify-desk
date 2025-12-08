@@ -6,7 +6,7 @@ export async function GET() {
     const notionResponse = await notionRequest<any>(`/data_sources/${process.env.ASSETS_DATA_SOURCE_ID}`);
 
     const response = {
-      "사용/제고/폐기/기타": (notionResponse.properties["사용/제고/폐기/기타"].select?.options || []).map(
+      "사용/재고/폐기/기타": (notionResponse.properties["사용/재고/폐기/기타"].select?.options || []).map(
         (option: { name: string }) => option.name,
       ),
       법인명: (notionResponse.properties.법인명.select?.options || []).map((option: { name: string }) => option.name),
