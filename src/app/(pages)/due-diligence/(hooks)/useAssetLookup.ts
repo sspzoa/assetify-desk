@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSetAtom } from "jotai";
 import {
-  StocktakingFoundPageIdAtom,
-  StocktakingFound법인명Atom,
-  StocktakingFound부서Atom,
-  StocktakingFound사용자Atom,
-  StocktakingFound실사확인Atom,
-  StocktakingFound제조사Atom,
-  StocktakingStepAtom,
-} from "@/app/(pages)/stocktaking/(atoms)/useStocktakingFormStore";
+  DueDiligenceFoundPageIdAtom,
+  DueDiligenceFound법인명Atom,
+  DueDiligenceFound부서Atom,
+  DueDiligenceFound사용자Atom,
+  DueDiligenceFound실사확인Atom,
+  DueDiligenceFound제조사Atom,
+  DueDiligenceStepAtom,
+} from "@/app/(pages)/due-diligence/(atoms)/useDueDiligenceFormStore";
 
 interface AssetLookupResponse {
   pageId: string;
@@ -28,20 +28,20 @@ interface UseAssetLookupReturn {
 }
 
 export const useAssetLookup = (): UseAssetLookupReturn => {
-  const setPageId = useSetAtom(StocktakingFoundPageIdAtom);
-  const set법인명 = useSetAtom(StocktakingFound법인명Atom);
-  const set부서 = useSetAtom(StocktakingFound부서Atom);
-  const set사용자 = useSetAtom(StocktakingFound사용자Atom);
-  const set제조사 = useSetAtom(StocktakingFound제조사Atom);
-  const set실사확인 = useSetAtom(StocktakingFound실사확인Atom);
-  const setStep = useSetAtom(StocktakingStepAtom);
+  const setPageId = useSetAtom(DueDiligenceFoundPageIdAtom);
+  const set법인명 = useSetAtom(DueDiligenceFound법인명Atom);
+  const set부서 = useSetAtom(DueDiligenceFound부서Atom);
+  const set사용자 = useSetAtom(DueDiligenceFound사용자Atom);
+  const set제조사 = useSetAtom(DueDiligenceFound제조사Atom);
+  const set실사확인 = useSetAtom(DueDiligenceFound실사확인Atom);
+  const setStep = useSetAtom(DueDiligenceStepAtom);
 
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: async (assetId: string) => {
       const formData = new FormData();
       formData.append("자산번호", assetId);
 
-      const response = await fetch("/api/stocktaking/lookup", {
+      const response = await fetch("/api/due-diligence/lookup", {
         method: "POST",
         body: formData,
       });

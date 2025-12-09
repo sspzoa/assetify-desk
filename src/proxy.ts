@@ -1,8 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { validateBearerToken } from "@/shared/lib/auth";
+import { validateDueDiligencePeriod } from "@/shared/lib/due-diligence";
 import { validateSession } from "@/shared/lib/session";
-import { validateStocktakingPeriod } from "@/shared/lib/stocktaking";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -37,8 +37,8 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith("/api/stocktaking")) {
-    const validation = await validateStocktakingPeriod();
+  if (pathname.startsWith("/api/due-diligence")) {
+    const validation = await validateDueDiligencePeriod();
 
     if (!validation.isValid) {
       return NextResponse.json({ message: validation.message }, { status: 404 });
@@ -49,5 +49,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/assets/:path*", "/api/license/:path*", "/api/session/query", "/api/stocktaking/:path*"],
+  matcher: ["/api/assets/:path*", "/api/license/:path*", "/api/session/query", "/api/due-diligence/:path*"],
 };

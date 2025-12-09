@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const 사용자 = formData.get("사용자") as string;
     const 자산번호 = formData.get("자산번호") as string;
 
-    const checkResponse = await notionRequest<any>(`/data_sources/${process.env.STOCKTAKING_DATA_SOURCE_ID}/query`, {
+    const checkResponse = await notionRequest<any>(`/data_sources/${process.env.DUE_DILIGENCE_DATA_SOURCE_ID}/query`, {
       method: "POST",
       body: {
         filter: {
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     const body = {
       parent: {
-        data_source_id: process.env.STOCKTAKING_DATA_SOURCE_ID,
+        data_source_id: process.env.DUE_DILIGENCE_DATA_SOURCE_ID,
       },
       properties: {
         법인명: { select: { name: 법인명 || "" } },

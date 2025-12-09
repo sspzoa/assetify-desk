@@ -1,13 +1,13 @@
 "use client";
 
 import MenuButton from "@/app/(pages)/(home)/(components)/menuButton";
-import { useStocktakingInfo } from "@/app/(pages)/(home)/(hooks)/useStocktakingInfo";
+import { useDueDiligenceInfo } from "@/app/(pages)/(home)/(hooks)/useDueDiligenceInfo";
 import Container from "@/shared/components/common/container";
 import Header from "@/shared/components/common/header";
 import LoadingComponent from "@/shared/components/common/loadingComponent";
 
 export default function Home() {
-  const { data: stocktakingInfo, isLoading } = useStocktakingInfo();
+  const { data: dueDiligenceInfo, isLoading } = useDueDiligenceInfo();
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -23,11 +23,11 @@ export default function Home() {
           title="수리 요청하기"
           description="하드웨어 고장이 난 경우 수리를 요청할 수 있어요."
         />
-        {stocktakingInfo && (
+        {dueDiligenceInfo && (
           <MenuButton
-            href="/stocktaking"
-            title={stocktakingInfo.실사제목 || "재고조사"}
-            description={`${stocktakingInfo.시작날짜} ~ ${stocktakingInfo.끝날짜}`}
+            href="/due-diligence"
+            title={dueDiligenceInfo.실사제목 || "재고조사"}
+            description={`${dueDiligenceInfo.시작날짜} ~ ${dueDiligenceInfo.끝날짜}`}
           />
         )}
       </div>

@@ -2,15 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import {
-  StocktakingFormAssetIdAtom,
-  StocktakingFoundPageIdAtom,
-  StocktakingManual법인명Atom,
-  StocktakingManual부서Atom,
-  StocktakingManual사용자Atom,
-  StocktakingStepAtom,
-} from "@/app/(pages)/stocktaking/(atoms)/useStocktakingFormStore";
+  DueDiligenceFormAssetIdAtom,
+  DueDiligenceFoundPageIdAtom,
+  DueDiligenceManual법인명Atom,
+  DueDiligenceManual부서Atom,
+  DueDiligenceManual사용자Atom,
+  DueDiligenceStepAtom,
+} from "@/app/(pages)/due-diligence/(atoms)/useDueDiligenceFormStore";
 
-interface UseStocktakingFormReturn {
+interface UseDueDiligenceFormReturn {
   isConfirming: boolean;
   isSubmittingManual: boolean;
   confirmError: any;
@@ -20,22 +20,22 @@ interface UseStocktakingFormReturn {
   resetFlow: () => void;
 }
 
-export const useStocktakingForm = (): UseStocktakingFormReturn => {
+export const useDueDiligenceForm = (): UseDueDiligenceFormReturn => {
   const router = useRouter();
 
-  const assetId = useAtomValue(StocktakingFormAssetIdAtom);
+  const assetId = useAtomValue(DueDiligenceFormAssetIdAtom);
 
-  const pageId = useAtomValue(StocktakingFoundPageIdAtom);
+  const pageId = useAtomValue(DueDiligenceFoundPageIdAtom);
 
-  const 법인명 = useAtomValue(StocktakingManual법인명Atom);
-  const 부서 = useAtomValue(StocktakingManual부서Atom);
-  const 사용자 = useAtomValue(StocktakingManual사용자Atom);
+  const 법인명 = useAtomValue(DueDiligenceManual법인명Atom);
+  const 부서 = useAtomValue(DueDiligenceManual부서Atom);
+  const 사용자 = useAtomValue(DueDiligenceManual사용자Atom);
 
-  const setStep = useSetAtom(StocktakingStepAtom);
-  const set자산번호 = useSetAtom(StocktakingFormAssetIdAtom);
-  const set법인명 = useSetAtom(StocktakingManual법인명Atom);
-  const set부서 = useSetAtom(StocktakingManual부서Atom);
-  const set사용자 = useSetAtom(StocktakingManual사용자Atom);
+  const setStep = useSetAtom(DueDiligenceStepAtom);
+  const set자산번호 = useSetAtom(DueDiligenceFormAssetIdAtom);
+  const set법인명 = useSetAtom(DueDiligenceManual법인명Atom);
+  const set부서 = useSetAtom(DueDiligenceManual부서Atom);
+  const set사용자 = useSetAtom(DueDiligenceManual사용자Atom);
 
   const resetFlow = () => {
     set자산번호("");
@@ -52,7 +52,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
       const formData = new FormData();
       formData.append("assetId", assetId);
 
-      const response = await fetch(`/api/stocktaking/confirm/${pageId}`, {
+      const response = await fetch(`/api/due-diligence/confirm/${pageId}`, {
         method: "PATCH",
         body: formData,
       });
@@ -80,7 +80,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
       formData.append("부서", 부서);
       formData.append("사용자", 사용자);
 
-      const response = await fetch("/api/stocktaking", {
+      const response = await fetch("/api/due-diligence", {
         method: "POST",
         body: formData,
       });

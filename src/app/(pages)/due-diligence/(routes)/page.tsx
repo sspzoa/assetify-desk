@@ -3,23 +3,23 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useStocktakingInfo } from "@/app/(pages)/(home)/(hooks)/useStocktakingInfo";
+import { useDueDiligenceInfo } from "@/app/(pages)/(home)/(hooks)/useDueDiligenceInfo";
 import {
-  StocktakingFormAssetIdAtom,
-  StocktakingFound법인명Atom,
-  StocktakingFound부서Atom,
-  StocktakingFound사용자Atom,
-  StocktakingFound실사확인Atom,
-  StocktakingFound제조사Atom,
-  StocktakingManual법인명Atom,
-  StocktakingManual부서Atom,
-  StocktakingManual사용자Atom,
-  StocktakingStepAtom,
-} from "@/app/(pages)/stocktaking/(atoms)/useStocktakingFormStore";
-import { StocktakingOptions법인명Atom } from "@/app/(pages)/stocktaking/(atoms)/useStocktakingOptionsStore";
-import { useAssetLookup } from "@/app/(pages)/stocktaking/(hooks)/useAssetLookup";
-import { useStocktakingForm } from "@/app/(pages)/stocktaking/(hooks)/useStocktakingForm";
-import { useStocktakingOptions } from "@/app/(pages)/stocktaking/(hooks)/useStocktakingOptions";
+  DueDiligenceFormAssetIdAtom,
+  DueDiligenceFound법인명Atom,
+  DueDiligenceFound부서Atom,
+  DueDiligenceFound사용자Atom,
+  DueDiligenceFound실사확인Atom,
+  DueDiligenceFound제조사Atom,
+  DueDiligenceManual법인명Atom,
+  DueDiligenceManual부서Atom,
+  DueDiligenceManual사용자Atom,
+  DueDiligenceStepAtom,
+} from "@/app/(pages)/due-diligence/(atoms)/useDueDiligenceFormStore";
+import { DueDiligenceOptions법인명Atom } from "@/app/(pages)/due-diligence/(atoms)/useDueDiligenceOptionsStore";
+import { useAssetLookup } from "@/app/(pages)/due-diligence/(hooks)/useAssetLookup";
+import { useDueDiligenceForm } from "@/app/(pages)/due-diligence/(hooks)/useDueDiligenceForm";
+import { useDueDiligenceOptions } from "@/app/(pages)/due-diligence/(hooks)/useDueDiligenceOptions";
 import Container from "@/shared/components/common/container";
 import ErrorComponent from "@/shared/components/common/errorComponent";
 import Header from "@/shared/components/common/header";
@@ -28,27 +28,27 @@ import { FormField, FormFieldList, SelectOption, TextInput } from "@/shared/comp
 import SubmitButton from "@/shared/components/form/submit-button";
 import { TicketDetailCard, TicketDetailInfo } from "@/shared/components/form/ticketDetailCards";
 
-export default function Stocktaking() {
+export default function DueDiligence() {
   const router = useRouter();
-  const { isLoading: isLoadingInfo, error: infoError } = useStocktakingInfo();
-  const { isLoading: isLoadingOptions, error: optionsError } = useStocktakingOptions();
+  const { isLoading: isLoadingInfo, error: infoError } = useDueDiligenceInfo();
+  const { isLoading: isLoadingOptions, error: optionsError } = useDueDiligenceOptions();
   const { isLookingUp, error: lookupError, lookupAsset } = useAssetLookup();
   const { isConfirming, isSubmittingManual, confirmError, manualError, confirmAsset, submitManual, resetFlow } =
-    useStocktakingForm();
+    useDueDiligenceForm();
 
-  const [step, setStep] = useAtom(StocktakingStepAtom);
-  const [자산번호, set자산번호] = useAtom(StocktakingFormAssetIdAtom);
+  const [step, setStep] = useAtom(DueDiligenceStepAtom);
+  const [자산번호, set자산번호] = useAtom(DueDiligenceFormAssetIdAtom);
 
-  const found법인명 = useAtomValue(StocktakingFound법인명Atom);
-  const found부서 = useAtomValue(StocktakingFound부서Atom);
-  const found사용자 = useAtomValue(StocktakingFound사용자Atom);
-  const found제조사 = useAtomValue(StocktakingFound제조사Atom);
-  const found실사확인 = useAtomValue(StocktakingFound실사확인Atom);
+  const found법인명 = useAtomValue(DueDiligenceFound법인명Atom);
+  const found부서 = useAtomValue(DueDiligenceFound부서Atom);
+  const found사용자 = useAtomValue(DueDiligenceFound사용자Atom);
+  const found제조사 = useAtomValue(DueDiligenceFound제조사Atom);
+  const found실사확인 = useAtomValue(DueDiligenceFound실사확인Atom);
 
-  const 법인명Options = useAtomValue(StocktakingOptions법인명Atom);
-  const [manual법인명, setManual법인명] = useAtom(StocktakingManual법인명Atom);
-  const [manual부서, setManual부서] = useAtom(StocktakingManual부서Atom);
-  const [manual사용자, setManual사용자] = useAtom(StocktakingManual사용자Atom);
+  const 법인명Options = useAtomValue(DueDiligenceOptions법인명Atom);
+  const [manual법인명, setManual법인명] = useAtom(DueDiligenceManual법인명Atom);
+  const [manual부서, setManual부서] = useAtom(DueDiligenceManual부서Atom);
+  const [manual사용자, setManual사용자] = useAtom(DueDiligenceManual사용자Atom);
 
   useEffect(() => {
     if (!isLoadingInfo && infoError) {
@@ -96,7 +96,7 @@ export default function Stocktaking() {
   if (step === "input") {
     return (
       <Container>
-        <Header title="S.T." highlighted="Form" />
+        <Header title="DD" highlighted="Form" />
         <FormFieldList onSubmit={handleLookup}>
           <FormField title="자산 번호" required>
             <TextInput placeholder="ex. 2309-N0001" value={자산번호} onChange={set자산번호} required />
@@ -121,7 +121,7 @@ export default function Stocktaking() {
   if (step === "confirm") {
     return (
       <Container>
-        <Header title="S.T." highlighted="Confirm" />
+        <Header title="DD" highlighted="Confirm" />
         <FormFieldList>
           <TicketDetailCard className="flex flex-col gap-spacing-100 divide-y divide-line-divider">
             <TicketDetailInfo label="자산 번호" value={자산번호} />
@@ -172,7 +172,7 @@ export default function Stocktaking() {
   if (step === "manual") {
     return (
       <Container>
-        <Header title="S.T." highlighted="Manual" />
+        <Header title="DD" highlighted="Manual" />
         <div className="flex items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300">
           <p className="text-content-standard-secondary text-label">자산 번호: {자산번호}</p>
         </div>

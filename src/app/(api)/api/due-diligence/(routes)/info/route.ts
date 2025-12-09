@@ -4,7 +4,7 @@ import { notionRequest } from "@/shared/lib/notion";
 export async function GET() {
   try {
     const notionResponse = await notionRequest<any>(
-      `/data_sources/${process.env.STOCKTAKING_INFO_DATA_SOURCE_ID}/query`,
+      `/data_sources/${process.env.DUE_DILIGENCE_INFO_DATA_SOURCE_ID}/query`,
       {
         method: "POST",
         body: {
