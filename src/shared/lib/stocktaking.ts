@@ -43,7 +43,7 @@ export async function validateStocktakingPeriod(): Promise<{
     }
 
     return { isValid: true };
-  } catch (error) {
+  } catch (_error) {
     return {
       isValid: false,
       message: "실사 기간 확인 중 오류가 발생했습니다.",
