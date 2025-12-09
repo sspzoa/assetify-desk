@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { validateBearerToken } from "@/shared/lib/auth";
 import { validateSession } from "@/shared/lib/session";
+import { validateStocktakingPeriod } from "@/shared/lib/stocktaking";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -36,9 +37,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/api/stocktaking")) {
+    const validation = await validateStocktakingPeriod();
+
+    if (!validation.isValid) {
+      return NextResponse.json({ message: validation.message }, { status: 404 });
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/assets/:path*", "/api/license/:path*", "/api/session/query"],
+  matcher: ["/api/assets/:path*", "/api/license/:path*", "/api/session/query", "/api/stocktaking/:path*"],
 };
