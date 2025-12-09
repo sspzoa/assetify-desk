@@ -22,30 +22,16 @@ import SubmitButton from "@/shared/components/form/submit-button";
 
 export default function Stocktaking() {
   const router = useRouter();
-  const { data: stocktakingInfo, isLoading: isLoadingInfo, error: infoError } = useStocktakingInfo();
+  const { isLoading: isLoadingInfo, error: infoError } = useStocktakingInfo();
   const { isLoading, error } = useStocktakingOptions();
   const { isSubmitting, error: submitError, handleSubmit } = useStocktakingForm();
 
   useEffect(() => {
     if (!isLoadingInfo && infoError) {
-      alert("진행 중인 실사가 없습니다.");
+      alert(infoError.message);
       router.push("/");
-      return;
     }
-
-    if (!isLoadingInfo && stocktakingInfo) {
-      const isActive = () => {
-        if (!stocktakingInfo?.시작날짜 || !stocktakingInfo?.끝날짜) return false;
-        const today = new Date().toISOString().split("T")[0];
-        return today >= stocktakingInfo.시작날짜 && today <= stocktakingInfo.끝날짜;
-      };
-
-      if (!isActive()) {
-        alert("진행 중인 실사가 없습니다.");
-        router.push("/");
-      }
-    }
-  }, [isLoadingInfo, stocktakingInfo, infoError, router]);
+  }, [isLoadingInfo, infoError, router]);
 
   const 법인명Options = useAtomValue(StocktakingOptions법인명Atom);
 
@@ -60,6 +46,10 @@ export default function Stocktaking() {
 
   if (error) {
     return <ErrorComponent errorMessage={error.message} />;
+  }
+
+  if (infoError) {
+    return null;
   }
 
   return (

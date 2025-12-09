@@ -51,6 +51,7 @@ export const useStocktakingForm = (): UseStocktakingFormReturn => {
       return data;
     },
     onSuccess: () => {
+      alert("성공적으로 제출되었습니다.");
       resetForm();
       router.push("/");
     },
