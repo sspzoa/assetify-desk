@@ -96,7 +96,7 @@ export default function Stocktaking() {
   if (step === "input") {
     return (
       <Container>
-        <Header title="Stocktaking" highlighted="Form" />
+        <Header title="S.T." highlighted="Form" />
         <FormFieldList onSubmit={handleLookup}>
           <FormField title="자산 번호" required>
             <TextInput placeholder="ex. 2309-N0001" value={자산번호} onChange={set자산번호} required />
@@ -121,7 +121,7 @@ export default function Stocktaking() {
   if (step === "confirm") {
     return (
       <Container>
-        <Header title="Stocktaking" highlighted="Confirm" />
+        <Header title="S.T." highlighted="Confirm" />
         <FormFieldList>
           <TicketDetailCard className="flex flex-col gap-spacing-100 divide-y divide-line-divider">
             <TicketDetailInfo label="자산 번호" value={자산번호} />
@@ -172,7 +172,7 @@ export default function Stocktaking() {
   if (step === "manual") {
     return (
       <Container>
-        <Header title="Stocktaking" highlighted="Manual" />
+        <Header title="S.T." highlighted="Manual" />
         <div className="flex items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300">
           <p className="text-content-standard-secondary text-label">자산 번호: {자산번호}</p>
         </div>
