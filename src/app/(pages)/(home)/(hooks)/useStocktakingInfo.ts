@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 
-interface DueDiligenceInfoResponse {
+interface StocktakingInfoResponse {
   실사제목: string;
   시작날짜: string | null;
   끝날짜: string | null;
 }
 
-export const useDueDiligenceInfo = () => {
-  return useQuery<DueDiligenceInfoResponse>({
-    queryKey: ["dueDiligenceInfo"],
+export const useStocktakingInfo = () => {
+  return useQuery<StocktakingInfoResponse>({
+    queryKey: ["stocktakingInfo"],
     queryFn: async () => {
-      const response = await fetch("/api/due-diligence/info");
+      const response = await fetch("/api/stocktaking/info");
       const data = await response.json();
 
       if (!response.ok) {

@@ -1,12 +1,12 @@
 import { notionRequest } from "@/shared/lib/notion";
 
-export async function validateDueDiligencePeriod(): Promise<{
+export async function validateStocktakingPeriod(): Promise<{
   isValid: boolean;
   message?: string;
 }> {
   try {
     const notionResponse = await notionRequest<any>(
-      `/data_sources/${process.env.DUE_DILIGENCE_INFO_DATA_SOURCE_ID}/query`,
+      `/data_sources/${process.env.STOCKTAKING_INFO_DATA_SOURCE_ID}/query`,
       {
         method: "POST",
         body: {
