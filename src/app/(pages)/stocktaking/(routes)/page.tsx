@@ -173,8 +173,8 @@ export default function Stocktaking() {
     return (
       <Container>
         <Header title="Stocktaking" highlighted="Manual" />
-        <div className="rounded-radius-400 bg-components-fill-standard-secondary p-spacing-400">
-          <p className="text-content-standard-secondary text-label">자산번호: {자산번호}</p>
+        <div className="flex items-center gap-spacing-300 rounded-radius-400 border border-line-outline bg-components-fill-standard-secondary px-spacing-400 py-spacing-300">
+          <p className="text-content-standard-secondary text-label">자산 번호: {자산번호}</p>
         </div>
         <FormFieldList onSubmit={handleManualSubmit}>
           <FormField title="법인명" required>
